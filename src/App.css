@@ -1,0 +1,100 @@
+.app-shell {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  overflow: hidden;
+  background: radial-gradient(circle at top, #172347 0%, #090d1c 50%, #05070d 100%);
+  color: #f7f7ff;
+}
+
+.title-screen {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  cursor: pointer;
+  animation: fadeIn 350ms ease-out;
+}
+
+.title-screen h1 {
+  margin: 0;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: clamp(2rem, 6vw, 4.5rem);
+}
+
+.title-screen p {
+  margin: 0;
+  color: #b9c5ff;
+  font-size: 1rem;
+}
+
+.menu-canvas-wrap {
+  width: 100%;
+  height: 100svh;
+  animation: fadeIn 250ms ease-out;
+}
+
+.rules-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(4, 8, 18, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 20;
+}
+
+.rules-panel {
+  width: min(600px, 90vw);
+  border: 1px solid rgba(124, 141, 255, 0.35);
+  border-radius: 14px;
+  background: #111a30;
+  color: #f4f6ff;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.rules-panel h2 {
+  margin: 0 0 12px;
+}
+
+.rules-panel ul {
+  margin: 0 0 18px;
+  padding-left: 18px;
+}
+
+.rules-panel button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #ffffff;
+  background: #4155ff;
+  cursor: pointer;
+}
+
+.gameplay-placeholder {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  background: rgba(10, 16, 33, 0.85);
+  border: 1px solid rgba(129, 145, 255, 0.4);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 0;
+  z-index: 15;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
