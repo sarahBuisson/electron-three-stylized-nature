@@ -1,12 +1,12 @@
 import { Environment, Float, OrbitControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
-import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing'
 import { MENU_ITEMS, type MenuActionId } from '@config/menuConfig'
 import { GAMEPLAY_MENU_PRESET } from '@config/visualPresets'
 import { isConfirmKey, isMenuDownKey, isMenuUpKey } from '@services/game/inputService'
 import type { Keybinds } from '@models/Keybinds'
 import { useEffect, useMemo, useState } from 'react'
 import { MenuButton3D } from './MenuButton3D'
+
 
 interface MainMenu3DProps {
   keybinds: Keybinds
@@ -87,10 +87,6 @@ export function MainMenu3D({ keybinds, onAction }: MainMenu3DProps) {
 
         <Environment preset="city" />
 
-        <EffectComposer>
-          <Bloom luminanceThreshold={0.45} intensity={0.8} mipmapBlur />
-          <Vignette eskil={false} offset={0.15} darkness={0.6} />
-        </EffectComposer>
 
         <OrbitControls enablePan={false} enableRotate={false} enableZoom={false} />
       </Canvas>

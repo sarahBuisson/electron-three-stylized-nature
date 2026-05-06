@@ -38,6 +38,28 @@
   animation: fadeIn 250ms ease-out;
 }
 
+.menu-loading {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 24px;
+  animation: fadeIn 200ms ease-out;
+}
+
+.menu-loading__title {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+}
+
+.menu-loading__text {
+  max-width: 36rem;
+  color: #b9c5ff;
+}
+
 .rules-overlay {
   position: absolute;
   inset: 0;

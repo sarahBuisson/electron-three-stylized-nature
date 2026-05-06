@@ -1,5 +1,4 @@
-import { useMemo, useState } from 'react'
-import { MainMenu3D } from '@components/menu/MainMenu3D'
+import { Suspense, useMemo, useState } from 'react'
 import { GameplayPlaceholder } from '@components/gameplay/GameplayPlaceholder'
 import { RulesOverlay } from '@components/ui/RulesOverlay'
 import { TitleScreen } from '@components/ui/TitleScreen'
@@ -10,6 +9,8 @@ import { storageService } from '@services/storage/storageService'
 import { loggerService } from '@services/utils/loggerService'
 import type { GameFlowState } from '@models/GameFlowState'
 import './App.css'
+import { MainMenu3D } from '@components/menu/MainMenu3D'
+
 
 function App() {
   const [screen, setScreen] = useState<GameFlowState>('title')
@@ -43,7 +44,16 @@ function App() {
 
       {screen === 'menu' && (
         <>
-          <MainMenu3D keybinds={keybinds} onAction={handleAction} />
+          <Suspense
+            fallback={
+              <div className="menu-loading" role="status" aria-live="polite">
+                <span className="menu-loading__title">Chargement du menu 3D...</span>
+                <span className="menu-loading__text">Preparation de la scene, des effets et des assets.</span>
+              </div>
+            }
+          >
+            <MainMenu3D keybinds={keybinds} onAction={handleAction} />
+          </Suspense>
           <RulesOverlay open={rulesOpen} keybinds={keybinds} onClose={() => setRulesOpen(false)} />
           {showGameplayMessage && <GameplayPlaceholder />}
         </>
