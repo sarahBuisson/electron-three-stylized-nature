@@ -10,7 +10,7 @@
     "build:web": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "dist:win": "npm run build:web; electron-builder --win portable"
+    "dist:win": "npm run build:web && electron-builder --win portable"
   },
   "dependencies": {
     "@emnapi/core": "^1.10.0",
