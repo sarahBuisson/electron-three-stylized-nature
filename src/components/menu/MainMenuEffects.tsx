@@ -8,4 +8,3 @@ export function MainMenuEffects() {
     </EffectComposer>
   )
 }
-

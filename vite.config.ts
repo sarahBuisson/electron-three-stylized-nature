@@ -1,17 +1,17 @@
-import path from 'node:path'
+import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: process.env.VITE_BASE_PATH || '/',
+  base: './',
   resolve: {
     alias: {
-      '@components': path.resolve(__dirname, 'src/components'),
-      '@services': path.resolve(__dirname, 'src/services'),
-      '@config': path.resolve(__dirname, 'src/config'),
-      '@models': path.resolve(__dirname, 'src/types'),
-      '@utils': path.resolve(__dirname, 'src/utils'),
+      '@components': resolve(__dirname, 'src/components'),
+      '@services': resolve(__dirname, 'src/services'),
+      '@config': resolve(__dirname, 'src/config'),
+      '@models': resolve(__dirname, 'src/types'),
+      '@utils': resolve(__dirname, 'src/utils'),
     },
   },
 })

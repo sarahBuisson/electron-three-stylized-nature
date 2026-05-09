@@ -4,9 +4,13 @@ import { MENU_ITEMS, type MenuActionId } from '@config/menuConfig'
 import { GAMEPLAY_MENU_PRESET } from '@config/visualPresets'
 import { isConfirmKey, isMenuDownKey, isMenuUpKey } from '@services/game/inputService'
 import type { Keybinds } from '@models/Keybinds'
-import { useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { MenuButton3D } from './MenuButton3D'
 
+const MainMenuEffects = lazy(async () => {
+  const module = await import('./MainMenuEffects')
+  return { default: module.MainMenuEffects }
+})
 
 interface MainMenu3DProps {
   keybinds: Keybinds
@@ -87,6 +91,9 @@ export function MainMenu3D({ keybinds, onAction }: MainMenu3DProps) {
 
         <Environment preset="city" />
 
+        <Suspense fallback={null}>
+          <MainMenuEffects />
+        </Suspense>
 
         <OrbitControls enablePan={false} enableRotate={false} enableZoom={false} />
       </Canvas>

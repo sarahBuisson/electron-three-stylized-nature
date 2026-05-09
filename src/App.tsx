@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useState } from 'react'
+import { lazy, Suspense, useMemo, useState } from 'react'
 import { GameplayPlaceholder } from '@components/gameplay/GameplayPlaceholder'
 import { RulesOverlay } from '@components/ui/RulesOverlay'
 import { TitleScreen } from '@components/ui/TitleScreen'
@@ -9,8 +9,11 @@ import { storageService } from '@services/storage/storageService'
 import { loggerService } from '@services/utils/loggerService'
 import type { GameFlowState } from '@models/GameFlowState'
 import './App.css'
-import { MainMenu3D } from '@components/menu/MainMenu3D'
 
+const MainMenu3D = lazy(async () => {
+  const module = await import('@components/menu/MainMenu3D')
+  return { default: module.MainMenu3D }
+})
 
 function App() {
   const [screen, setScreen] = useState<GameFlowState>('title')

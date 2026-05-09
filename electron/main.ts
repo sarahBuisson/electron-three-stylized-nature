@@ -1,5 +1,5 @@
-const path = require('node:path')
-const { app, BrowserWindow } = require('electron')
+import path from 'node:path'
+import { app, BrowserWindow } from 'electron'
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -9,7 +9,7 @@ function createWindow() {
     minHeight: 640,
     backgroundColor: '#05070d',
     webPreferences: {
-      preload: path.join(__dirname, 'preload.cjs'),
+      preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: true,
     },
