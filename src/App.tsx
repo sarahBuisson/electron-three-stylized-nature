@@ -10,9 +10,9 @@ import { loggerService } from '@services/utils/loggerService'
 import type { GameFlowState } from '@models/GameFlowState'
 import './App.css'
 
-const MainMenu3D = lazy(async () => {
-  const module = await import('@components/menu/MainMenu3D')
-  return { default: module.MainMenu3D }
+const MainMenuThree = lazy(async () => {
+  const module = await import('@components/menu/MainMenuThree')
+  return { default: module.MainMenuThree }
 })
 
 function App() {
@@ -55,8 +55,10 @@ function App() {
               </div>
             }
           >
-            <MainMenu3D keybinds={keybinds} onAction={handleAction} />
+            <MainMenuThree keybinds={keybinds} onAction={handleAction} />
+
           </Suspense>
+
           <RulesOverlay open={rulesOpen} keybinds={keybinds} onClose={() => setRulesOpen(false)} />
           {showGameplayMessage && <GameplayPlaceholder />}
         </>
