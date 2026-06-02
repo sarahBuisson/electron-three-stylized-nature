@@ -1,5 +1,5 @@
 import { lazy, Suspense, useMemo, useState } from 'react'
-import { GameplayPlaceholder } from '@components/gameplay/GameplayPlaceholder'
+import { GameplayScene } from '@components/gameplay/GameplayScene'
 import { RulesOverlay } from '@components/ui/RulesOverlay'
 import { TitleScreen } from '@components/ui/TitleScreen'
 import type { MenuActionId } from '@config/menuConfig'
@@ -18,14 +18,14 @@ const MainMenuThree = lazy(async () => {
 function App() {
   const [screen, setScreen] = useState<GameFlowState>('title')
   const [rulesOpen, setRulesOpen] = useState(false)
-  const [showGameplayMessage, setShowGameplayMessage] = useState(false)
   const keybinds = useMemo(() => storageService.getKeybinds(), [])
 
   const handleAction = (actionId: MenuActionId) => {
     runMenuAction(actionId, {
       onNewGame: () => {
-        setShowGameplayMessage(true)
+        setRulesOpen(false)
         loggerService.info('Nouvelle partie selectionnee')
+        setScreen(flowService.goToGameplay())
       },
       onRules: () => setRulesOpen(true),
       onOptions: () => loggerService.info('Options a implementer'),
@@ -34,11 +34,10 @@ function App() {
   }
 
   return (
-    <main className={`app-shell ${screen === 'menu' ? 'is-menu' : 'is-title'}`}>
+    <main className={`app-shell ${screen === 'menu' ? 'is-menu' : screen === 'gameplay' ? 'is-gameplay' : 'is-title'}`}>
       {screen === 'title' && (
         <TitleScreen
           onStart={() => {
-            setShowGameplayMessage(false)
             setRulesOpen(false)
             setScreen(flowService.goToMenu())
           }}
@@ -60,9 +59,10 @@ function App() {
           </Suspense>
 
           <RulesOverlay open={rulesOpen} keybinds={keybinds} onClose={() => setRulesOpen(false)} />
-          {showGameplayMessage && <GameplayPlaceholder />}
         </>
       )}
+
+      {screen === 'gameplay' && <GameplayScene keybinds={keybinds} />}
     </main>
   )
 }

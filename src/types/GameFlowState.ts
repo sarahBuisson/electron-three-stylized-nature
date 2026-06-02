@@ -1,2 +1,2 @@
-export type GameFlowState = 'title' | 'menu'
+export type GameFlowState = 'title' | 'menu' | 'gameplay'
 

@@ -13,6 +13,7 @@ export default defineConfig({
       '@config': resolve(__dirname, 'src/config'),
       '@models': resolve(__dirname, 'src/types'),
       '@utils': resolve(__dirname, 'src/utils'),
+      '@shaders': resolve(__dirname, 'src/shaders'),
     },
   },
 })

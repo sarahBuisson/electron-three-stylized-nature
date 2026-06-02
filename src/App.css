@@ -98,3 +98,8 @@
     opacity: 1;
   }
 }
+
+.app-shell.is-gameplay {
+  background: #000000;
+}
+

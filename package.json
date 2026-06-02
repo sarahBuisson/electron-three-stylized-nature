@@ -24,6 +24,7 @@
     "@react-three/drei": "^10.7.4",
     "@react-three/fiber": "^9.4.0",
     "@react-three/postprocessing": "^3.0.4",
+    "@react-three/rapier": "^2.2.0",
     "esbuild": "^0.28.0",
     "postprocessing": "^6.38.0",
     "react": "^19.2.5",

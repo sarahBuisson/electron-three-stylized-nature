@@ -7,6 +7,9 @@ export const flowService = {
   goToTitle(): GameFlowState {
     return 'title'
   },
+  goToGameplay(): GameFlowState {
+    return 'gameplay'
+  },
 }
 
 
