@@ -1,13 +1,16 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Physics } from '@react-three/rapier'
 import { PerspectiveCamera } from '@react-three/drei'
-import { ShaderMaterial } from 'three'
+import { type Euler, ShaderMaterial, type Vector3 } from 'three'
 import type { Keybinds } from '@models/Keybinds'
 import { EffectComposer, Outline, Select, Selection } from '@react-three/postprocessing'
 import { InteractiveCube } from './InteractiveCube'
 import { GroundPlane } from './GroundPlane'
 import { CharacterController } from './CharacterController'
 import { GameplayController } from './GameplayController'
+import { LandscapeContent } from '@components/gameplay/landscape/LandscapeContent.tsx';
+import type { HexagonalTableau } from '@services/game/labyrinth/tableau.ts';
+import { initCubes, initTableauAndLab, type KaseLandscape } from '@components/gameplay/landscape/service.ts';
 
 export interface CubeConfig {
   position: [number, number, number]
@@ -54,6 +57,7 @@ function Level(cubeConfigs: CubeConfig[], onMessageUpdate: (type: ("hover" | "cl
     </Selection>;
 }
 
+
 export function GameplaySceneContent({
   keybinds,
   onSnapshotTaken,
@@ -61,51 +65,14 @@ export function GameplaySceneContent({
   onMessageUpdate,
 }: GameplaySceneContentProps) {
   const cubeConfigs: CubeConfig[] = useMemo(
-    () => [
-      {
-        position: [0, 1, -10],
-        scale: 2,
-        hoverMessage: 'Red Cube - Hover for more',
-        clickMessage: 'Red Cube Clicked! Look at me with M+Click',
-        autoLookTarget: [0, 1, -10],
-        color: '#ff6b6b',
-      },
-      {
-        position: [-5, 0.75, -8],
-        scale: 1.5,
-        hoverMessage: 'Blue Cube - Interactive',
-        clickMessage: 'Blue Cube Selected!',
-        autoLookTarget: [-5, 0.75, -8],
-        color: '#4ecdc4',
-      },
-      {
-        position: [5, 0.75, -8],
-        scale: 1.5,
-        hoverMessage: 'Green Cube - Beautiful',
-        clickMessage: 'Green Cube Activated!',
-        autoLookTarget: [5, 0.75, -8],
-        color: '#95e1d3',
-      },
-      {
-        position: [-3, 0.6, -15],
-        scale: 1.2,
-        hoverMessage: 'Purple Cube - Far Away',
-        clickMessage: 'Purple Cube - Distance Test',
-        autoLookTarget: [-3, 0.6, -15],
-        color: '#c9b1ff',
-      },
-      {
-        position: [3, 0.6, -15],
-        scale: 1.2,
-        hoverMessage: 'Yellow Cube - Limited',
-        clickMessage: 'Yellow Cube - Snapshot Enabled',
-        autoLookTarget: [3, 0.6, -15],
-        color: '#ffd93d',
-      },
-    ],
+    initCubes,
     []
   )
 
+
+    const [tableau, setTableau] = useState<HexagonalTableau<KaseLandscape>>(()=>initTableauAndLab());
+    const [pictureUrl, setPictureUrl] = useState<string>()
+    const [solution, setSolution] = useState<{ position: Vector3, rotation: Euler }>()
   return (
     <Physics gravity={[0, -9.81, 0]}>
         <PerspectiveCamera makeDefault position={[0, 2, 5]} fov={75}/>
@@ -118,7 +85,7 @@ export function GameplaySceneContent({
         <GroundPlane position={[0, 0, 0]} size={50}/>
 
         {Level(cubeConfigs, onMessageUpdate, material)}
-
+<LandscapeContent tableau={tableau}></LandscapeContent>
         <GameplayController keybinds={keybinds} onSnapshotTaken={onSnapshotTaken}/>
     </Physics>
   )

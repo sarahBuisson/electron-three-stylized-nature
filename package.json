@@ -29,7 +29,8 @@
     "postprocessing": "^6.38.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "three": "^0.181.0"
+    "three": "^0.181.0",
+    "vite-plugin-glsl": "^1.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
