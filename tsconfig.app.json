@@ -14,7 +14,8 @@
       "@config/*": ["src/config/*"],
       "@models/*": ["src/types/*"],
       "@utils/*": ["src/utils/*"],
-      "@shaders/*": ["src/shaders/*"]
+      "@shaders/*": ["src/shaders/*"],
+      "@pages/*":   ["src/pages/*"]
     },
 
     /* Bundler mode */

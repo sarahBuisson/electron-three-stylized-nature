@@ -15,6 +15,7 @@ export default defineConfig({
             '@models': resolve(__dirname, 'src/types'),
             '@utils': resolve(__dirname, 'src/utils'),
             '@shaders': resolve(__dirname, 'src/shaders'),
+            '@pages':   resolve(__dirname, 'src/pages'),
         },
     },
     assetsInclude: [
