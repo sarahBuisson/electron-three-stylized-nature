@@ -1,4 +1,4 @@
-/** Chemins de route utilisés dans toute l'application. */
+import type { GameFlowState } from '@models/GameFlowState'
 export const ROUTES = {
   title:    '/',
   menu:     '/menu',
@@ -7,6 +7,16 @@ export const ROUTES = {
   options:  '/options',
 } as const
 
-export type RoutePath = (typeof ROUTES)[keyof typeof ROUTES]
+export const flowService = {
+  goToMenu(): GameFlowState {
+    return 'menu'
+  },
+  goToTitle(): GameFlowState {
+    return 'title'
+  },
+  goToGameplay(): GameFlowState {
+    return 'gameplay'
+  },
+}
 
 

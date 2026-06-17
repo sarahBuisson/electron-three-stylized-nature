@@ -1,32 +1,21 @@
-import type { Keybinds } from '@models/Keybinds'
 
 export const KEYBIND_PRESETS = {
-  WASD: {
-    menuUp: 'ArrowUp',
-    menuDown: 'ArrowDown',
-    confirm: 'Enter',
-    close: 'Escape',
-    moveForward: 'w',
-    moveBackward: 's',
-    moveLeft: 'a',
-    moveRight: 'd',
-    jump: ' ',
-    toggleCameraMode: 'm',
-    takeSnapshot: 'p',
-  } as Keybinds,
-  AZERTY: {
-    menuUp: 'ArrowUp',
-    menuDown: 'ArrowDown',
-    confirm: 'Enter',
-    close: 'Escape',
-    moveForward: 'z',
-    moveBackward: 's',
-    moveLeft: 'q',
-    moveRight: 'd',
-    jump: ' ',
-    toggleCameraMode: 'm',
-    takeSnapshot: 'p',
-  } as Keybinds,
+  WASD:  [{name: "forward", keys: ["ArrowUp", "w", "W"]},
+{name: "backward", keys: ["ArrowDown", "s", "S"]},
+{name: "left", keys: ["ArrowLeft", "a", "A"]},
+{name: "right", keys: ["ArrowRight", "d", "D"]},
+{name: "jump", keys: ["Space"]},
+{name: "takeSnapshot", keys: ["p","P"]},
+
+] ,
+  AZERTY:[{name: "forward", keys: ["ArrowUp", "Z", "z"]},
+    {name: "backward", keys: ["ArrowDown", "s", "S"]},
+    {name: "left", keys: ["ArrowLeft", "q", "Q"]},
+    {name: "right", keys: ["ArrowRight", "d", "D"]},
+    {name: "jump", keys: ["Space"]},
+    {name: "takeSnapshot", keys: ["p","P"]},
+
+  ],
 }
 
 export type KeybindPresetType = keyof typeof KEYBIND_PRESETS

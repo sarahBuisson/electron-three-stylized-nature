@@ -4,11 +4,8 @@ import type { Meta, StoryObj } from '@storybook/your-framework';
 import { Tree, TreeCase, Zone } from './decors.tsx';
 import React from 'react';
 import { Canvas } from '@react-three/fiber';
-import { LandscapeScene } from '../gameplay/landscape/LandscapeScene.tsx';
 import { OrbitControls } from '@react-three/drei';
 import { Physics } from '@react-three/rapier';
-import '../../styles/storybook.css';
-import { TriangleGeometry } from './geometry/Triangle.tsx';
 const meta = {
     // 👇 The component you're working on
     component: Tree,

@@ -6,11 +6,10 @@ import type { Keybinds } from '@models/Keybinds'
 import { EffectComposer, Outline, Select, Selection } from '@react-three/postprocessing'
 import { InteractiveCube } from './InteractiveCube'
 import { GroundPlane } from './GroundPlane'
-import { CharacterController } from './CharacterController'
-import { GameplayController } from './GameplayController'
 import { LandscapeContent } from '@components/gameplay/landscape/LandscapeContent.tsx';
 import type { HexagonalTableau } from '@services/game/labyrinth/tableau.ts';
 import { initCubes, initTableauAndLab, type KaseLandscape } from '@components/gameplay/landscape/service.ts';
+import { FPSPlayer } from '@components/gameplay/controller/FPSPlayer.tsx';
 
 export interface CubeConfig {
   position: [number, number, number]
@@ -59,7 +58,7 @@ function Level(cubeConfigs: CubeConfig[], onMessageUpdate: (type: ("hover" | "cl
 
 
 export function GameplaySceneContent({
-  keybinds,
+
   onSnapshotTaken,
   material,
   onMessageUpdate,
@@ -81,12 +80,11 @@ export function GameplaySceneContent({
         <ambientLight intensity={0.8}/>
         <directionalLight position={[10, 10, 10]} intensity={0.8}/>
 
-        <CharacterController/>
         <GroundPlane position={[0, 0, 0]} size={50}/>
 
         {Level(cubeConfigs, onMessageUpdate, material)}
 <LandscapeContent tableau={tableau}></LandscapeContent>
-        <GameplayController keybinds={keybinds} onSnapshotTaken={onSnapshotTaken}/>
+        <FPSPlayer></FPSPlayer>
     </Physics>
   )
 }

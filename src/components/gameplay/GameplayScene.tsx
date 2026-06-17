@@ -6,8 +6,8 @@ import { createCombinedMaterial } from '@services/game/shaderService'
 import { CanvasErrorBoundary } from './CanvasErrorBoundary'
 import { GameplaySceneContent } from './GameplaySceneContent'
 import { SnapshotGallery } from './SnapshotGallery'
-import { PlayerProvider } from './playerContext'
 import './GameplayScene.css'
+import { KeyboardControls } from '@react-three/drei';
 
 export function GameplayScene() {
   const [snapshots, setSnapshots] = useState<string[]>([])
@@ -58,14 +58,17 @@ export function GameplayScene() {
       <div className="gameplay-scene__canvas-container">
         <CanvasErrorBoundary onRetry={() => setCanvasInstance((v) => v + 1)}>
           <Canvas key={canvasInstance} gl={{ antialias: true, preserveDrawingBuffer: true }}>
-            <PlayerProvider>
+            <KeyboardControls
+                map={
+                  activeKeybinds
+                 }>
               <GameplaySceneContent
-                keybinds={activeKeybinds}
+
                 onSnapshotTaken={handleSnapshotTaken}
                 material={material}
                 onMessageUpdate={handleMessageUpdate}
               />
-            </PlayerProvider>
+            </KeyboardControls>
           </Canvas>
         </CanvasErrorBoundary>
       </div>

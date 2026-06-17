@@ -1,5 +1,5 @@
 import { ShaderMaterial, Texture } from 'three'
-import { combinedVertexShader, combinedFragmentShader } from '@shaders/combinedMaterial'
+import { combinedFragmentShader, combinedVertexShader } from '@shaders/combinedMaterial/combinedMaterial.ts';
 
 export interface CombinedMaterialUniforms {
   uTexture: { value: Texture }
