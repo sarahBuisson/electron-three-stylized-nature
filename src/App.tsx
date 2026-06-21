@@ -1,70 +1,40 @@
-import { lazy, Suspense, useMemo, useState } from 'react'
-import { GameplayScene } from '@components/gameplay/GameplayScene'
-import { RulesOverlay } from '@components/ui/RulesOverlay'
-import { TitleScreen } from '@components/ui/TitleScreen'
-import type { MenuActionId } from '@config/menuConfig'
-import { flowService } from '@services/game/flowService'
-import { runMenuAction } from '@services/game/menuService'
-import { storageService } from '@services/storage/storageService'
-import { loggerService } from '@services/utils/loggerService'
-import type { GameFlowState } from '@models/GameFlowState'
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { TitlePage } from '@pages/TitlePage'
+import { MenuPage } from '@pages/MenuPage'
+import { GameplayPage } from '@pages/GameplayPage'
+import { MapEditorPage } from '@pages/MapEditorPage'
 import './App.css'
+import { MapPlayPage } from '@pages/MapPlayPage.tsx';
 
-const MainMenuThree = lazy(async () => {
-  const module = await import('@components/menu/MainMenuThree')
-  return { default: module.MainMenuThree }
-})
+function AppContent() {
+  const location = useLocation()
 
-function App() {
-  const [screen, setScreen] = useState<GameFlowState>('title')
-  const [rulesOpen, setRulesOpen] = useState(false)
-  const keybinds = useMemo(() => storageService.getKeybinds(), [])
-
-  const handleAction = (actionId: MenuActionId) => {
-    runMenuAction(actionId, {
-      onNewGame: () => {
-        setRulesOpen(false)
-        loggerService.info('Nouvelle partie selectionnee')
-        setScreen(flowService.goToGameplay())
-      },
-      onRules: () => setRulesOpen(true),
-      onOptions: () => loggerService.info('Options a implementer'),
-      onQuit: () => setScreen(flowService.goToTitle()),
-    })
+  const getScreenClass = () => {
+    if (location.pathname === '/menu') return 'is-menu'
+    if (location.pathname === '/gameplay') return 'is-gameplay'
+    if (location.pathname === '/map-editor') return 'is-map-editor'
+    return 'is-title'
   }
 
   return (
-    <main className={`app-shell ${screen === 'menu' ? 'is-menu' : screen === 'gameplay' ? 'is-gameplay' : 'is-title'}`}>
-      {screen === 'title' && (
-        <TitleScreen
-          onStart={() => {
-            setRulesOpen(false)
-            setScreen(flowService.goToMenu())
-          }}
-        />
-      )}
-
-      {screen === 'menu' && (
-        <>
-          <Suspense
-            fallback={
-              <div className="menu-loading" role="status" aria-live="polite">
-                <span className="menu-loading__title">Chargement du menu 3D...</span>
-                <span className="menu-loading__text">Preparation de la scene, des effets et des assets.</span>
-              </div>
-            }
-          >
-            <MainMenuThree keybinds={keybinds} onAction={handleAction} />
-
-          </Suspense>
-
-          <RulesOverlay open={rulesOpen} keybinds={keybinds} onClose={() => setRulesOpen(false)} />
-        </>
-      )}
-
-      {screen === 'gameplay' && <GameplayScene keybinds={keybinds} />}
-
+    <main className={`app-shell ${getScreenClass()}`}>
+      <Routes>
+        <Route path="/" element={<TitlePage />} />
+        <Route path="/menu" element={<MenuPage />} />
+        <Route path="/gameplay" element={<GameplayPage />} />
+        <Route path="/gameplay/level1" element={<GameplayPage />} />
+        <Route path="/map-editor" element={<MapEditorPage />} />
+        <Route path="/map-play" element={<MapPlayPage />} />
+      </Routes>
     </main>
+  )
+}
+
+function App() {
+  return (
+    <HashRouter>
+      <AppContent />
+    </HashRouter>
   )
 }
 

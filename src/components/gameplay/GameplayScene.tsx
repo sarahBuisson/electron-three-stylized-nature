@@ -9,7 +9,15 @@ import { SnapshotGallery } from './SnapshotGallery'
 import './GameplayScene.css'
 import { KeyboardControls } from '@react-three/drei';
 
-export function GameplayScene() {
+enum level {
+  drawing,
+  engraving,
+  geometryLandscape,
+  japaneese
+
+}
+
+export function GameplayScene(props:{level}) {
   const [snapshots, setSnapshots] = useState<string[]>([])
   const [hoverMessage, setHoverMessage] = useState('')
   const [clickMessage, setClickMessage] = useState('')
@@ -53,21 +61,22 @@ export function GameplayScene() {
     setSnapshots((prev) => prev.filter((_, i) => i !== index))
   }, [])
 
+  let gameplaySceneContent = <GameplaySceneContent
+
+      onSnapshotTaken={handleSnapshotTaken}
+      material={material}
+      onMessageUpdate={handleMessageUpdate}
+  />;
   return (
     <div className="gameplay-scene">
       <div className="gameplay-scene__canvas-container">
         <CanvasErrorBoundary onRetry={() => setCanvasInstance((v) => v + 1)}>
-          <Canvas key={canvasInstance} gl={{ antialias: true, preserveDrawingBuffer: true }}>
+          <Canvas key={canvasInstance} gl={{antialias: true, preserveDrawingBuffer: true}}>
             <KeyboardControls
                 map={
                   activeKeybinds
-                 }>
-              <GameplaySceneContent
-
-                onSnapshotTaken={handleSnapshotTaken}
-                material={material}
-                onMessageUpdate={handleMessageUpdate}
-              />
+                }>
+              {gameplaySceneContent}
             </KeyboardControls>
           </Canvas>
         </CanvasErrorBoundary>
@@ -78,10 +87,10 @@ export function GameplayScene() {
           Contrôles :
         </label>
         <select
-          id="keybind-select"
-          value={keybindPreset}
-          onChange={(e) => setKeybindPreset(e.target.value as KeybindPresetType)}
-          className="gameplay-scene__keybind-select"
+            id="keybind-select"
+            value={keybindPreset}
+            onChange={(e) => setKeybindPreset(e.target.value as KeybindPresetType)}
+            className="gameplay-scene__keybind-select"
         >
           <option value="WASD">WASD</option>
           <option value="AZERTY">AZERTY (ZQSD)</option>
@@ -93,7 +102,7 @@ export function GameplayScene() {
         {clickMessage && <div className="gameplay-scene__message-click">{clickMessage}</div>}
       </div>
 
-      <SnapshotGallery snapshots={snapshots} onDelete={handleDeleteSnapshot} />
+      <SnapshotGallery snapshots={snapshots} onDelete={handleDeleteSnapshot}/>
     </div>
   )
 }
