@@ -10,14 +10,12 @@ import { saveMapForPlay } from '@utils/mapPlayStorage';
 import './MapEditorPage.css';
 type ToolType = 'brush' | 'bucket';
 const TERRAIN_TYPES = [
-  { name: 'zone', label: 'Zone', color: '#e8d5b7' },
   { name: 'water', label: 'Water', color: '#4a90e2' },
   { name: 'mountain', label: 'Mountain', color: '#8b7355' },
   { name: 'tree', label: 'Tree', color: '#2d5016' },
   { name: 'rock', label: 'Rock', color: '#6b6b6b' },
   { name: 'sand', label: 'Sand', color: '#f4e4c1' },
   { name: 'grass', label: 'Grass', color: '#7cb342' },
-  { name: 'purple', label: 'Purple', color: '#9c27b0' },
 ];
 export function MapEditorPage() {
   const navigate = useNavigate();
@@ -165,28 +163,6 @@ export function MapEditorPage() {
                 >
                   {terrain.label}
                 </button>
-              ))}
-            </div>
-          </section>
-          <section className="editor-section">
-            <h2>Options</h2>
-            <label className="option-checkbox">
-              <input
-                type="checkbox"
-                checked={showGrid}
-                onChange={(e) => setShowGrid(e.target.checked)}
-              />
-              Show Grid
-            </label>
-          </section>
-          <section className="editor-section">
-            <h2>Statistics</h2>
-            <div className="stats-list">
-              {Object.entries(stats).map(([content, count]) => (
-                <div key={content} className="stat-item">
-                  <span className="stat-label">{content}:</span>
-                  <span className="stat-value">{count}</span>
-                </div>
               ))}
             </div>
           </section>

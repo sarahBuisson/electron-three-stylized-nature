@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, useGLTF } from '@react-three/drei';
 import { EngravingMaterial, type EngravingMaterialProps } from './EngravingMaterial';
+import { useMemo } from 'react';
+import { type BufferGeometry, Mesh } from 'three';
 
 /**
  * # EngravingMaterial
@@ -148,6 +150,35 @@ export const SolidRender: Story = {
   render: (args) => <EngravingMaterialScene {...args} />,
 };
 
+
+export function tree(){
+  const gltf = useGLTF("./level/drawing/bonsai.glb");
+  let geometries = useMemo(() => {
+    const extractedGeometries: BufferGeometry[] = [];
+    gltf.scene.traverse((child) => {
+      if (child instanceof Mesh && child.geometry) {
+        extractedGeometries.push(child.geometry.clone());
+      }
+    });
+    return extractedGeometries;
+  }, [gltf]);
+  return (
+    <group>
+      {geometries.map((geometry, index) => (
+        <mesh key={index} geometry={geometry}>
+          <EngravingMaterial
+              ambientWeight={0.808}
+              diffuseWeight={1.0}
+              rimWeight={10.46}
+              inkColor={[72, 72, 164]}
+              repeat={[2, 1]}
+          />
+
+        </mesh>
+      ))}
+    </group>
+  )
+}
 /**
  * Multiple geometries with different settings.
  */
@@ -156,9 +187,20 @@ export const MultipleObjects: Story = {
     <div style={{ width: '100vw', height: '100vh' }}>
       <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
         <OrbitControls enableDamping />
-
+        {tree()}
         {/* TorusKnot with Default preset */}
         <mesh position={[0, 0, 0]}>
+          <torusKnotGeometry args={[1, 0.3, 128, 32]} />
+          <EngravingMaterial
+            ambientWeight={0.808}
+            diffuseWeight={1.0}
+            rimWeight={10.46}
+            inkColor={[72, 72, 164]}
+            repeat={[2, 1]}
+          />
+        </mesh>
+
+        <mesh position={[-10, 0, 0]}>
           <torusKnotGeometry args={[1, 0.3, 128, 32]} />
           <EngravingMaterial
             ambientWeight={0.808}

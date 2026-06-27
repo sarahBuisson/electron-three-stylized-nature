@@ -10,6 +10,7 @@ import { LandscapeContent } from '@components/gameplay/landscape/LandscapeConten
 import type { HexagonalTableau } from '@services/game/labyrinth/tableau.ts';
 import { initCubes, initTableauAndLab, type KaseLandscape } from '@components/gameplay/landscape/service.ts';
 import { FPSPlayer } from '@components/gameplay/controller/FPSPlayer.tsx';
+import DrawingContent from '@components/gameplay/levels/drawing/DrawingContent.tsx';
 
 export interface CubeConfig {
   position: [number, number, number]
@@ -83,8 +84,9 @@ export function GameplaySceneContent({
         <GroundPlane position={[0, 0, 0]} size={50}/>
 
         {Level(cubeConfigs, onMessageUpdate, material)}
-<LandscapeContent tableau={tableau}></LandscapeContent>
+
         <FPSPlayer></FPSPlayer>
+        <DrawingContent></DrawingContent>
     </Physics>
   )
 }

@@ -1,5 +1,4 @@
 import { CanvasTexture } from 'three'
-import type { MessageType } from './types'
 
 const DEFAULT_TEXTURE_SIZE = 64
 const DEFAULT_GRID_SIZE = 8
@@ -39,13 +38,17 @@ export function removeSnapshot(previousSnapshots: string[], indexToRemove: numbe
   return previousSnapshots.filter((_, index) => index !== indexToRemove)
 }
 
+export enum messageType {
+  hover ,
+  click
+}
 export function updateMessages(
-  type: MessageType,
+  type: messageType,
   message: string,
   previousHover: string,
   previousClick: string
 ): { hoverMessage: string; clickMessage: string } {
-  if (type === 'hover') {
+  if (type === messageType.hover) {
     return { hoverMessage: message, clickMessage: previousClick }
   }
 
