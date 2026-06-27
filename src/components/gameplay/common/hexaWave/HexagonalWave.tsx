@@ -30,9 +30,9 @@ function hexToPosition(q: number, r: number, size: number): [number, number] {
 export function HexagonalWave({
   width = 10,
   height = 10,
-  hexSize = 1,
-  particleSize = 0.2,
-  particleColor = '#00ff88',
+  hexSize = 0.1,
+  particleSize = 1,
+  particleColor = '#0088ff',
   waveSpeed = 1,
   waveAmplitude = 0.5,
   waveFrequency = 0.5,
@@ -69,7 +69,7 @@ export function HexagonalWave({
     const time = state.clock.elapsedTime * waveSpeed;
 
     for (let i = 0; i < phases.length; i++) {
-      const y = Math.sin(time + phases[i]+i) * waveAmplitude;
+      const y = Math.sin(time + phases[i]+i) * waveAmplitude-0.5;
       positionAttribute.setY(i, y);
     }
 
@@ -112,7 +112,7 @@ export function HexagonalWave({
         size={particleSize}
         color={particleColor}
         transparent
-        opacity={0.8}
+        opacity={0.95}
         sizeAttenuation
         map={texture2}
         alphaTest={0.01}

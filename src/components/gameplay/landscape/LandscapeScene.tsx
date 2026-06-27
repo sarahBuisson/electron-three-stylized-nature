@@ -1,6 +1,6 @@
 import {  Sky } from '@react-three/drei';
 import { CuboidCollider, Physics, RigidBody } from '@react-three/rapier';
-import { LandscapeContent } from './LandscapeContent.tsx';
+import { TableauToThreeContent } from './TableauToThreeContent.tsx';
 import React, { useRef } from 'react';
 import { Euler } from 'three';
 import { saveImage } from './service.ts';
@@ -11,11 +11,11 @@ export function LandscapeScene(props: { tableau:HexagonalTableau<Kase2D>}) {
 
     const {gl, scene, camera} = useThree();
 
-    const contentRef = useRef<typeof LandscapeContent>(null);
+    const contentRef = useRef<typeof TableauToThreeContent>(null);
     return <>
 
-        <Physics debug={true}>
-            <LandscapeContent ref={contentRef} tableau={props.tableau}></LandscapeContent>
+        <Physics>
+            <TableauToThreeContent ref={contentRef} tableau={props.tableau}></TableauToThreeContent>
 
             <RigidBody type="fixed"
                        friction={0.5}

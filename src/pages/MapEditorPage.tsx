@@ -6,8 +6,9 @@ import { initTableauAndLab, type KaseLandscape } from '@components/gameplay/land
 import type { HexagonalTableau } from '@services/game/labyrinth/tableau.ts';
 import { floodFill } from '@utils/floodFill';
 import { createEmptyTableau, createTestTableau } from '@utils/mapGenerator';
-import { saveMapForPlay } from '@utils/mapPlayStorage';
+import { MapToPlay, saveMapForPlay } from '@utils/mapPlayStorage';
 import './MapEditorPage.css';
+import { Euler, Vector2 } from 'three';
 type ToolType = 'brush' | 'bucket';
 const TERRAIN_TYPES = [
   { name: 'water', label: 'Water', color: '#4a90e2' },
@@ -23,7 +24,6 @@ export function MapEditorPage() {
   const [selectedTool, setSelectedTool] = useState<ToolType>('brush');
   const [selectedTerrain, setSelectedTerrain] = useState<string>('zone');
   const [selectedKase, setSelectedKase] = useState<KaseLandscape | null>(null);
-  const [showGrid, setShowGrid] = useState(true);
   const [updateCounter, setUpdateCounter] = useState(0);
   const [showSizeModal, setShowSizeModal] = useState(false);
   // Force un re-render quand le tableau change
@@ -74,16 +74,6 @@ export function MapEditorPage() {
     },
     [forceUpdate]
   );
-  // Statistiques de la carte
-  const stats = useMemo(() => {
-    const allKases = tableau.allKases();
-    const counts: Record<string, number> = {};
-    allKases.forEach((kase) => {
-      const content = kase.content || 'unknown';
-      counts[content] = (counts[content] || 0) + 1;
-    });
-    return counts;
-  }, [tableau, updateCounter]);
   // Taille actuelle de la carte
   const mapSize = useMemo(
     () => ({
@@ -95,7 +85,10 @@ export function MapEditorPage() {
   );
   // Gestion du mode Play
   const handlePlayMap = useCallback(() => {
-    saveMapForPlay(tableau);
+    const kaseLandscapes = tableau.allKases().filter(kase=>kase.content==='grass');
+    const start= kaseLandscapes[Math.floor(Math.random() * kaseLandscapes.length)];
+    const solution= kaseLandscapes[Math.floor(Math.random() * kaseLandscapes.length)];
+    saveMapForPlay(new MapToPlay(tableau,new Vector2(start.x,start.y),new Vector2(solution.x,solution.y),new Euler(0,Math.random()*Math.PI,0), "geomeytic"));
     navigate('/map-play');
   }, [tableau, navigate]);
 
@@ -195,7 +188,6 @@ export function MapEditorPage() {
               onKaseClick={handleKaseClick}
               onKasePaint={handleBrushPaint}
               hexSize={25}
-              showGrid={showGrid}
               selectedKase={selectedKase}
             />
           </div>

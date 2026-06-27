@@ -18,7 +18,7 @@ export function GroundPlane({ position, size }: GroundPlaneProps) {
       {/* boxGeometry a une épaisseur réelle : plus de collisions fantômes */}
       <mesh receiveShadow>
         <boxGeometry args={[size, THICKNESS, size]} />
-        <meshStandardMaterial color="#f5d800" />
+        <meshStandardMaterial color="#4488ff" />
       </mesh>
     </RigidBody>
   )

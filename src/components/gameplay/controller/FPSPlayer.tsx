@@ -1,4 +1,4 @@
-import { Helper, PerspectiveCamera, PointerLockControls, useKeyboardControls } from "@react-three/drei";
+import { PointerLockControls, useKeyboardControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { CapsuleCollider, RapierRigidBody, RigidBody, useRapier, } from "@react-three/rapier";
 import React, { useEffect, useRef } from "react";

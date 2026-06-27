@@ -8,6 +8,7 @@ import { HexagonGeometry } from './geometry/HexagonGeometry.tsx';
 import { CylinderCollider } from '@react-three/rapier';
 import type { Vector3 } from 'three';
 import { Color } from 'three';
+import { GrassWindMaterial } from '@components/gameplay/common/GrassWindMaterial.tsx';
 
 extend({FlatMaterial, SuperflatMaterial, SuperflatBisMaterial});
 
@@ -135,12 +136,11 @@ export function GrassGroup(props: { position?: Vector3 }) {
             grasss.push(
                 <mesh
                     position={[Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5]}
+                    material={ GrassWindMaterial}
                 ><TriangleGeometry baseSize={0.1}
                                    height={0.2 + Math.random()}
 
                 ></TriangleGeometry>
-                    <meshStandardMaterial
-                        color={new Color("green").multiplyScalar(Math.random())}></meshStandardMaterial>
                 </mesh>)
 
 

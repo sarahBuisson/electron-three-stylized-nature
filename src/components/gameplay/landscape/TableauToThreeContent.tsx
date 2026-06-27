@@ -1,12 +1,16 @@
 
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useRef } from 'react';
 import { GrassCase, Mountain, Sand, TreeCase, Water, Zone } from '../../graphic/decors.tsx';
 import { computeAveragePositionHexa, ContentRender } from './ContentRender.tsx';
-import type { Tableau } from '@services/game/labyrinth/tableau.ts';
+import { Kase2D, type Tableau } from '@services/game/labyrinth/tableau.ts';
 import type { KaseLandscape } from '@components/gameplay/landscape/service.ts';
+import { GrassWindMaterial } from '@components/gameplay/common/GrassWindMaterial.tsx';
+import { useFrame } from '@react-three/fiber';
+import { CylinderCollider, RigidBody } from '@react-three/rapier';
+import { HexagonalWave } from '@components/gameplay/common/hexaWave/HexagonalWave.tsx';
 
 
-export const LandscapeContent = (props:{ tableau:Tableau<KaseLandscape>}) => {
+export const TableauToThreeContent = (props:{ tableau:Tableau<KaseLandscape>}) => {
     const contentRef = useRef<typeof ContentRender>(null);
 
     useEffect(() => {
@@ -33,16 +37,46 @@ export const LandscapeContent = (props:{ tableau:Tableau<KaseLandscape>}) => {
                 default:
                     kaseRender = <Zone></Zone>
             }
+            props.tableau?.allKases().flat().forEach((kase, index) => {
 
+              const nei = props.tableau.neighbors(kase);
+              if(nei.length<6)
+                  props.tableau.getAllDirections().forEach((dir)=> {
+                  if(!props.tableau.neighborAt(kase,dir.x,dir.y)){
+
+                      //placer un mur invisible
+
+                      contentRef.current?.setWithKase(new Kase2D(kase.x + dir.x, kase.y + dir.y),
+                          <RigidBody type="fixed" ><CylinderCollider
+
+
+                              friction={0.5}
+                              restitution={0.5}
+                          args={[1, 1,]}></CylinderCollider>
+                          <HexagonalWave></HexagonalWave></RigidBody>);
+                  }
+                  })
+
+            })
             contentRef.current?.setWithKase(kase, kaseRender);
             return;
         });
+
+
+
     }, [props.tableau]);
     console.log("land")
+    useFrame((state) => (GrassWindMaterial.uniforms.time.value = state.clock.elapsedTime / 4))
 
     useImperativeHandle(props.ref, () => ({
 
         setWithKase(kase: Kase2D, element: React.JSX.Element) {
+            const position = computePosition(kaseSize, [kase]);
+            contentMap.set(computeKey(position), <group position={position}>{element}</group>);
+            setContentMap(new Map(contentMap));
+        },
+
+        setNearKase(kase: Kase2D, element: React.JSX.Element) {
             const position = computePosition(kaseSize, [kase]);
             contentMap.set(computeKey(position), <group position={position}>{element}</group>);
             setContentMap(new Map(contentMap));

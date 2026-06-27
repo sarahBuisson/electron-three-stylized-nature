@@ -6,7 +6,7 @@ import type { Keybinds } from '@models/Keybinds'
 import { EffectComposer, Outline, Select, Selection } from '@react-three/postprocessing'
 import { InteractiveCube } from './InteractiveCube'
 import { GroundPlane } from './GroundPlane'
-import { LandscapeContent } from '@components/gameplay/landscape/LandscapeContent.tsx';
+import { TableauToThreeContent } from '@components/gameplay/landscape/TableauToThreeContent.tsx';
 import type { HexagonalTableau } from '@services/game/labyrinth/tableau.ts';
 import { initCubes, initTableauAndLab, type KaseLandscape } from '@components/gameplay/landscape/service.ts';
 import { FPSPlayer } from '@components/gameplay/controller/FPSPlayer.tsx';
