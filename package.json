@@ -13,7 +13,7 @@
     "build:renderer": "vite build",
     "build": "tsc -b && npm run build:main && npm run build:preload && npm run build:renderer",
     "build:web": "tsc -b && vite build",
-    "build:web:dev": "tsc -b && vite build --mode development",
+    "build:web:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
     "dist:win": "npm run build && electron-builder --win",
