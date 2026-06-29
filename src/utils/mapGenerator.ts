@@ -111,4 +111,3 @@ export function validateMapSize(width: number, height: number): {
 
   return { valid: true };
 }
-

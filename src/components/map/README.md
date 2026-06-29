@@ -6,20 +6,20 @@ An interactive hexagonal map editor for creating and editing game levels using a
 
 ## Features
 
-### 🎨 Painting Tools
+###  Painting Tools
 
-1. **Brush Tool** 🖌️
+1. **Brush Tool** ️
    - Paint individual cells by clicking or dragging
    - Ideal for detailed, precise editing
    - Shortcut: Click on "Brush" button
 
-2. **Bucket Tool** 🪣
+2. **Bucket Tool** 
    - Fill entire connected regions with the same terrain type
    - Uses flood fill algorithm
    - Fills all adjacent cells of the same type
    - Shortcut: Click on "Bucket" button
 
-### 🌍 Terrain Types
+###  Terrain Types
 
 The editor supports 8 different terrain types:
 
@@ -32,14 +32,14 @@ The editor supports 8 different terrain types:
 - **Grass** (Green) - Grasslands
 - **Purple** - Special marker terrain
 
-### 🗺️ Map Display
+### ️ Map Display
 
 - **Hexagonal Grid** - True hexagonal layout with proper neighbors
 - **Grid Toggle** - Show/hide grid lines and coordinates
 - **Cell Selection** - Visual feedback on hover and selection
 - **Color Coding** - Each terrain type has a distinct color
 
-### 📊 Statistics Panel
+###  Statistics Panel
 
 Real-time statistics showing:
 - Count of each terrain type
@@ -171,4 +171,3 @@ navigate('/map-editor')
 - Efficient flood fill algorithm with visited set
 - Memoized calculations for hexagon rendering
 - Minimal re-renders with React optimization hooks
-

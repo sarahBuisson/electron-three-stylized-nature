@@ -149,4 +149,3 @@ export function MapSizeModal({ isOpen, onClose, onConfirm, currentSize }: MapSiz
     </div>
   );
 }
-

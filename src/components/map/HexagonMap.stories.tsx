@@ -16,7 +16,7 @@ class SimpleKaseLandscape extends Kase2D implements KaseLandscape {
 // Fonction helper pour créer un petit tableau de test
 function createTestTableau(size: number = 5): HexagonalTableau<KaseLandscape> {
   const kases: KaseLandscape[][] = [];
-
+  
   for (let x = 0; x < size; x++) {
     kases[x] = [];
     for (let y = 0; y < size; y++) {
@@ -25,21 +25,21 @@ function createTestTableau(size: number = 5): HexagonalTableau<KaseLandscape> {
   }
 
   const tableau = new HexagonalTableau(kases);
-
+  
   // Ajouter quelques terrains variés
   if (size >= 3) {
     tableau.getKase(1, 1)!.content = 'water';
     tableau.getKase(2, 2)!.content = 'mountain';
     tableau.getKase(3, 1)!.content = 'tree';
   }
-
+  
   return tableau;
 }
 
 // Fonction pour créer un grand tableau
 function createLargeTableau(): HexagonalTableau<KaseLandscape> {
   const kases: KaseLandscape[][] = [];
-
+  
   for (let x = -5; x < 5; x++) {
     kases[x + 5] = [];
     for (let y = -5; y < 5; y++) {
@@ -157,4 +157,3 @@ export const LargeHexagons: Story = {
     </div>
   ),
 };
-

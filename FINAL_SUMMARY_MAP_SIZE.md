@@ -1,4 +1,4 @@
-# 🎉 Récapitulatif Final - Choix de Taille de Carte
+#  Récapitulatif Final - Choix de Taille de Carte
 
 ## ✅ Fonctionnalité Implémentée
 
@@ -8,7 +8,7 @@
 - Pattern de test optionnel
 - Validation robuste
 
-## 📂 Structure des Fichiers
+##  Structure des Fichiers
 
 ### ✨ Nouveaux Fichiers (5)
 
@@ -37,7 +37,7 @@
    - Tests et validation
    - Quick start
 
-### 🔄 Fichiers Modifiés (2)
+###  Fichiers Modifiés (2)
 
 1. **`src/pages/MapEditorPage.tsx`**
    - Ajout imports (MapSizeModal, mapGenerator)
@@ -52,7 +52,7 @@
    - Styles `.size-label`
    - Styles `.size-change-button`
 
-## 🎨 Interface Utilisateur
+##  Interface Utilisateur
 
 ### Nouvelle Section Sidebar
 ```
@@ -62,7 +62,7 @@
 │ │ 20×20 (400 cells)    │ │ ← Affichage dynamique
 │ └──────────────────────┘ │
 │ ┌──────────────────────┐ │
-│ │ 📐 Resize Map        │ │ ← Bouton ouvrir modal
+│ │  Resize Map        │ │ ← Bouton ouvrir modal
 │ └──────────────────────┘ │
 └──────────────────────────┘
 ```
@@ -74,7 +74,7 @@
 - **Pattern** : Checkbox test pattern
 - **Actions** : Cancel / Create Map
 
-## 📊 Presets Disponibles
+##  Presets Disponibles
 
 | Nom    | Dimensions | Cells | Description           |
 |--------|------------|-------|-----------------------|
@@ -84,7 +84,7 @@
 | Large  | 30×30      | 900   | Grandes maps          |
 | Huge   | 50×50      | 2500  | Maps massives         |
 
-## 🛠️ Fonctionnalités Techniques
+## ️ Fonctionnalités Techniques
 
 ### 1. Génération de Tableau Vide
 ```typescript
@@ -109,10 +109,10 @@ validateMapSize(width, height)
 → Total max: 2500 cells
 ```
 
-## 🔄 Workflow Utilisateur
+##  Workflow Utilisateur
 
 1. **Ouvrir l'Éditeur** : Menu → "Editeur de Carte"
-2. **Cliquer "📐 Resize Map"** : Ouvre le modal
+2. **Cliquer " Resize Map"** : Ouvre le modal
 3. **Choisir Taille** : Preset ou Custom
 4. **Pattern (optionnel)** : Cocher si désiré
 5. **Créer** : Clic "Create Map"
@@ -154,7 +154,7 @@ validateMapSize(width, height)
 - ✅ Callbacks optimisés
 - ✅ CSS cohérent avec thème
 
-## 💡 Exemples d'Utilisation
+##  Exemples d'Utilisation
 
 ### Exemple 1 - Prototype Rapide
 ```
@@ -180,7 +180,7 @@ Pattern: ✓
 → Carte de défilement
 ```
 
-## 📖 Documentation
+##  Documentation
 
 ### Fichiers de Documentation
 - **MAP_SIZE_FEATURE.md** : Documentation technique complète
@@ -195,7 +195,7 @@ Pattern: ✓
 - Performance
 - Troubleshooting
 
-## 🚀 Démarrage
+##  Démarrage
 
 ```bash
 # Lancer l'application
@@ -205,10 +205,10 @@ npm run dev
 Menu Principal → "Editeur de Carte"
 
 # Utiliser
-Sidebar → "📐 Resize Map" → Choisir taille → "Create Map"
+Sidebar → " Resize Map" → Choisir taille → "Create Map"
 ```
 
-## 🎯 Résultat Final
+##  Résultat Final
 
 ### Ce qui a été accompli ✅
 - ✅ Modal professionnel et intuitif
@@ -230,7 +230,7 @@ Sidebar → "📐 Resize Map" → Choisir taille → "Create Map"
 - Presets avec descriptions
 - Pattern de test intelligent (adapté aux dimensions)
 
-## 🎉 Conclusion
+##  Conclusion
 
 **La fonctionnalité de choix de taille de carte est complète, testée, et prête à l'emploi !**
 
@@ -251,4 +251,3 @@ Le tout avec une interface intuitive, une validation robuste, et des performance
 **Fonctionnalité** : Map Size Selector  
 **Fichiers** : 5 créés, 2 modifiés  
 **Lines of Code** : ~600 lignes
-

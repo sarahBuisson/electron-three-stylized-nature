@@ -12,6 +12,9 @@ export function Blob() {
         return {
             u_time: { value: 0 },
             u_intensity: { value: 0.3 },
+            u_color1:{value:"#44FFaa"},
+            u_color2:{value:"#44aFfa"},
+            u_color3:{value:"#44FFff"}
         };
     });
 

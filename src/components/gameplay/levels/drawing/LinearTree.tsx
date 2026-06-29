@@ -4,10 +4,12 @@ import { CatmullRomCurve3, QuadraticBezierCurve3, Vector3 } from 'three';
 import { Blob } from '@components/gameplay/common/blob/Blob.tsx';
 import { DrawingMaterial } from '@shaders/drawing/DrawingMaterial.tsx';
 let radiusFn = (i, j) => {
-
+if(i<10)
     return (1 + j % 3) / (Math.log(i + 1))*0.09
+   else
+    return (2 + j % 3*0.5) / (Math.log(i + 1))*0.09
 };
-let pathBegining = [new Vector3(0, 0, 0),
+const pathBegining = [new Vector3(0, 0, 0),
     new Vector3(0, 2, 0),
     new Vector3(1, 2.5, 0)];
 export default function LinearTree() {

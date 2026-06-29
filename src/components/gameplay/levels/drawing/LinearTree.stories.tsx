@@ -3,6 +3,7 @@ import LinearTree from '@components/gameplay/levels/drawing/LinearTree.tsx';
 import { Canvas } from '@react-three/fiber';
 import { HexagonalInstances } from '@components/gameplay/common/HexagonalInstance/HexagonalInstances.tsx';
 import { OrbitControls } from '@react-three/drei';
+import { DrawedGrass } from '@components/gameplay/levels/drawing/DrawedGrass.tsx';
 
 
 const meta = {
@@ -56,6 +57,8 @@ const SceneWrapper = (args: any) => (
             <color attach="background" args={['#0f0f1e']} />
             <ambientLight intensity={0.5} />
            <LinearTree></LinearTree>
+            <group position={[2,0,2]}>   <DrawedGrass></DrawedGrass></group>
+
             <OrbitControls />
             <gridHelper args={[50, 50, '#333', '#222']} />
         </Canvas>

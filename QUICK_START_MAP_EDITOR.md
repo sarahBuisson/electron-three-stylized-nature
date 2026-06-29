@@ -1,10 +1,10 @@
-# 🗺️ Éditeur de Carte Hexagonale - Guide Rapide
+# ️ Éditeur de Carte Hexagonale - Guide Rapide
 
 ## ✨ Ce qui a été créé
 
 Un éditeur de carte hexagonale complet avec outils de peinture de type "Photoshop" pour éditer des grilles hexagonales.
 
-## 📂 Nouveaux Fichiers
+##  Nouveaux Fichiers
 
 ```
 src/
@@ -26,7 +26,7 @@ docs/
 └── MAP_EDITOR_SUMMARY.md            ✅ Documentation technique complète
 ```
 
-## 🎮 Comment Utiliser
+##  Comment Utiliser
 
 ### 1. Lancer l'Application
 ```bash
@@ -40,7 +40,7 @@ npm run dev
 
 ### 3. Éditer la Carte
 
-#### Mode Pinceau 🖌️
+#### Mode Pinceau ️
 ```
 1. Cliquez sur "Brush"
 2. Choisissez un type de terrain (ex: Water)
@@ -48,36 +48,36 @@ npm run dev
 4. Glissez pour peindre plusieurs cases
 ```
 
-#### Mode Seau 🪣
+#### Mode Seau 
 ```
 1. Cliquez sur "Bucket"
 2. Choisissez un type de terrain (ex: Grass)
 3. Cliquez sur une zone → toute la zone connectée change
 ```
 
-## 🎨 Types de Terrain Disponibles
+##  Types de Terrain Disponibles
 
 | Icône | Type | Couleur | Usage |
 |-------|------|---------|-------|
-| 🏜️ | Zone | Beige | Terrain par défaut |
-| 💧 | Water | Bleu | Eau, lacs |
+| ️ | Zone | Beige | Terrain par défaut |
+|  | Water | Bleu | Eau, lacs |
 | ⛰️ | Mountain | Marron | Montagnes |
-| 🌲 | Tree | Vert foncé | Forêts |
-| 🪨 | Rock | Gris | Rochers |
-| 🏖️ | Sand | Beige clair | Plages |
-| 🌿 | Grass | Vert | Prairies |
-| 💜 | Purple | Violet | Marqueurs |
+|  | Tree | Vert foncé | Forêts |
+|  | Rock | Gris | Rochers |
+| ️ | Sand | Beige clair | Plages |
+|  | Grass | Vert | Prairies |
+|  | Purple | Violet | Marqueurs |
 
-## 🛠️ Interface Utilisateur
+## ️ Interface Utilisateur
 
 ```
 ┌─────────────────────────────────────────────────┐
 │  Hexagonal Map Editor          ← Back to Menu   │
 ├──────────┬──────────────────────────────────────┤
-│          │  Tool: 🖌️ Brush  Terrain: water      │
+│          │  Tool: ️ Brush  Terrain: water      │
 │  TOOLS   ├──────────────────────────────────────┤
-│ 🖌️ Brush │                                      │
-│ 🪣 Bucket│         CARTE HEXAGONALE             │
+│ ️ Brush │                                      │
+│  Bucket│         CARTE HEXAGONALE             │
 │          │                                      │
 │ TERRAIN  │    [Hexagones interactifs]           │
 │ Zone     │                                      │
@@ -96,30 +96,30 @@ npm run dev
 └──────────┴──────────────────────────────────────┘
 ```
 
-## 🎯 Cas d'Usage Typiques
+##  Cas d'Usage Typiques
 
 ### Créer un Lac
 ```
-1. Outil: Bucket 🪣
-2. Terrain: Water 💧
+1. Outil: Bucket 
+2. Terrain: Water 
 3. Clic au centre → lac créé instantanément
 ```
 
 ### Dessiner une Forêt
 ```
-1. Outil: Brush 🖌️
-2. Terrain: Tree 🌲
+1. Outil: Brush ️
+2. Terrain: Tree 
 3. Clic-glissé → forme de forêt
 ```
 
 ### Tracer une Montagne
 ```
-1. Outil: Brush 🖌️
+1. Outil: Brush ️
 2. Terrain: Mountain ⛰️
 3. Paint le long d'une ligne
 ```
 
-## 🚀 Features Principales
+##  Features Principales
 
 ✅ **Brush Tool** - Peinture précise case par case
 ✅ **Bucket Tool** - Remplissage rapide de zones
@@ -131,7 +131,7 @@ npm run dev
 ✅ **Scrolling** - Navigation fluide
 ✅ **Thème Sombre** - Interface confortable
 
-## 📖 Documentation
+##  Documentation
 
 | Document | Description |
 |----------|-------------|
@@ -140,7 +140,7 @@ npm run dev
 | `EXPORT_IMPORT_GUIDE.md` | Guide export/import (future feature) |
 | `src/components/map/README.md` | Doc développeur du composant |
 
-## 🧪 Tester dans Storybook
+##  Tester dans Storybook
 
 ```bash
 npm run storybook
@@ -156,7 +156,7 @@ Stories disponibles :
 - Interactive (avec logs)
 - SmallHexagons / LargeHexagons
 
-## 🔮 Prochaines Features (Optionnelles)
+##  Prochaines Features (Optionnelles)
 
 - [ ] Export/Import JSON (code déjà prêt dans `mapSerializer.ts`)
 - [ ] Undo/Redo
@@ -177,7 +177,7 @@ Tous les tests passent :
 ✅ Stories Storybook opérationnelles
 ✅ Documentation complète
 
-## 🎉 Résultat
+##  Résultat
 
 **Éditeur de carte hexagonale professionnel et prêt à l'emploi !**
 
@@ -185,7 +185,7 @@ Pour commencer :
 ```bash
 npm run dev
 ```
-Puis : Menu → "Editeur de Carte" → Enjoy! 🎨
+Puis : Menu → "Editeur de Carte" → Enjoy! 
 
 ---
 
@@ -193,4 +193,3 @@ Puis : Menu → "Editeur de Carte" → Enjoy! 🎨
 - `GUIDE_EDITEUR_CARTE.md` - Guide utilisateur
 - `MAP_EDITOR_SUMMARY.md` - Doc technique complète
 - `src/components/map/README.md` - API du composant
-

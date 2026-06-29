@@ -20,6 +20,7 @@ const TERRAIN_TYPES = [
 ];
 export function MapEditorPage() {
   const navigate = useNavigate();
+  const [type,setType] = useState<string>("geometric");
   const [tableau, setTableau] = useState<HexagonalTableau<KaseLandscape>>(() => initTableauAndLab());
   const [selectedTool, setSelectedTool] = useState<ToolType>('brush');
   const [selectedTerrain, setSelectedTerrain] = useState<string>('zone');
@@ -85,12 +86,13 @@ export function MapEditorPage() {
   );
   // Gestion du mode Play
   const handlePlayMap = useCallback(() => {
-    const kaseLandscapes = tableau.allKases().filter(kase=>kase.content==='grass');
-    const start= kaseLandscapes[Math.floor(Math.random() * kaseLandscapes.length)];
-    const solution= kaseLandscapes[Math.floor(Math.random() * kaseLandscapes.length)];
-    saveMapForPlay(new MapToPlay(tableau,new Vector2(start.x,start.y),new Vector2(solution.x,solution.y),new Euler(0,Math.random()*Math.PI,0), "geomeytic"));
+    const kaseLandscapes = tableau.allKases().filter(kase => kase.content === 'grass');
+    const start = kaseLandscapes[Math.floor(Math.random() * kaseLandscapes.length)];
+    const solution = kaseLandscapes[Math.floor(Math.random() * kaseLandscapes.length)];
+    console.log("type", type)
+    saveMapForPlay(new MapToPlay(tableau, new Vector2(start.x, start.y), new Vector2(solution.x, solution.y), new Euler(0, Math.random() * Math.PI, 0), type));
     navigate('/map-play');
-  }, [tableau, navigate]);
+  }, [tableau, navigate, type]);
 
   return (
     <div className="map-editor-page">
@@ -121,6 +123,15 @@ export function MapEditorPage() {
                 📐 Resize Map
               </button>
             </div>
+            <h2>type</h2>
+            <select value={type} onChange={(e) => {
+              console.log("type", type, e.target.value);
+              setType(e.target.value);
+            }}>
+              <option value="geometric">Geometric</option>
+              <option value="drawing">Drawing</option>
+            </select>
+            {type}
           </section>
           <section className="editor-section">
             <h2>Tools</h2>

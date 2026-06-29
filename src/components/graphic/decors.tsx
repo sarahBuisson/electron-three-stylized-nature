@@ -6,9 +6,10 @@ import { FlatMaterial } from './material/flatMaterial/flatMaterial.tsx';
 import { SuperflatBisMaterial, SuperflatMaterial } from './material/superflatMaterial/superflatMaterial.tsx';
 import { HexagonGeometry } from './geometry/HexagonGeometry.tsx';
 import { CylinderCollider } from '@react-three/rapier';
-import type { Vector3 } from 'three';
+import { CatmullRomCurve3, Vector3 } from 'three';
 import { Color } from 'three';
 import { GrassWindMaterial } from '@components/gameplay/common/GrassWindMaterial.tsx';
+import CustomTubeGeometry from '@components/gameplay/common/CustomTubeGeometry.ts';
 
 extend({FlatMaterial, SuperflatMaterial, SuperflatBisMaterial});
 
@@ -112,6 +113,8 @@ export function TreeCase(props: { height: number }): JSX.Element {
 };
 
 export function GrassCase(props: { height: number }): JSX.Element {
+
+    const [geoGrass, setGeoGrass] = useState(() => {new CustomTubeGeometry(new CatmullRomCurve3([new Vector3(0, 0, 0), new Vector3(0.25, 0, 0), new Vector3(0, 0, 0.5), new Vector3(-0.75, 0, 0)]), 1, (a,b)=>(a%2)?Math.random():0, 2,false)})
     let [grass, setGrass] = useState(() => {
         const grasss = []
         for (let i = 0; i < 7; i++) {

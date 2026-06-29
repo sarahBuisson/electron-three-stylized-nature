@@ -2,6 +2,7 @@ import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useTexture } from '@react-three/drei';
+import { shuffle } from '@services/game/labyrinth/utils.ts';
 
 interface HexagonalParticlesProps {
   width?: number;
@@ -19,8 +20,8 @@ interface HexagonalParticlesProps {
  * Utilise le système de coordonnées axial pour les hexagones flat-topped
  */
 function hexToPosition(q: number, r: number, size: number): [number, number] {
-  const x = size * (Math.sqrt(3) * q + (Math.sqrt(3) / 2) * r);
-  const y = size * (3 / 2) * r;
+  const x = size * (Math.sqrt(3) * q + (Math.sqrt(3) / 2) * r)-0.5*size;
+  const y = size * (3 / 2) * r-0.5*size;
   return [x, y];
 }
 
@@ -58,7 +59,7 @@ export function HexagonalWave({
       }
     }
 
-    return { positions: new Float32Array(positions), phases };
+    return { positions: new Float32Array(shuffle(positions)), phases };
   }, [width, height, hexSize, waveFrequency]);
 
   // Animation sinusoïdale

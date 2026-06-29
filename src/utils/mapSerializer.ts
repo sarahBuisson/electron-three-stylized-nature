@@ -149,19 +149,18 @@ export function getMapStatistics(tableau: HexagonalTableau<KaseLandscape>): {
 
 /**
  * Exemple d'utilisation:
- *
+ * 
  * // Export
  * const mapData = serializeMap(tableau, { name: 'My Cool Map', author: 'John' });
  * downloadMap(tableau, 'my-map.json', { name: 'My Cool Map' });
- *
+ * 
  * // Import
  * const file = event.target.files[0];
  * const mapData = await loadMapFromFile(file);
  * // Puis reconstruire le tableau à partir de mapData.cells
- *
+ * 
  * // Stats
  * const stats = getMapStatistics(tableau);
  * console.log(`Total cells: ${stats.totalCells}`);
  * console.log(`Water: ${stats.terrainPercentages.water}%`);
  */
-
