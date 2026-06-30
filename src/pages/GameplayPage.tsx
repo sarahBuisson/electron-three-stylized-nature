@@ -8,25 +8,19 @@ export function GameplayPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const tableau = createTestTableau(10, 10);
+    const tableau = createTestTableau(15, 15);
 
-    tableau.allKases().forEach((kase) => {
-      if (kase.content === 'zone') {
-        kase.content = 'grass';
-      }
-    });
-
-    const playableKases = tableau.allKases().filter((kase) => kase.content === 'grass');
-    const start = playableKases[0] ?? tableau.allKases()[0];
-    const solution = playableKases[1] ?? start;
-
+    const playableKases = tableau.allKases().filter((kase) => kase.content!= 'mountain'&&kase.content!= 'tree');
+    const start = playableKases[Math.floor(playableKases.length*Math.random())] ||tableau.allKases()[0];
+    const solution = playableKases[Math.floor(playableKases.length*Math.random())] || start;
+console.log("start", start,(playableKases.length*Math.random()), "solution", solution,  playableKases.map(kase => kase.content));
     saveMapForPlay(
       new MapToPlay(
         tableau,
         new Vector2(start.x, start.y),
         new Vector2(solution.x, solution.y),
         new Euler(0, Math.random() * Math.PI, 0),
-        'geometric'
+        'drawing'
       )
     );
 

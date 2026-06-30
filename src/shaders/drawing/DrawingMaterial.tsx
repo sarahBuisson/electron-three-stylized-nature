@@ -224,9 +224,9 @@ export const DrawingMaterial: React.FC<DrawingMaterialProps> = ({
   invertRim = false,
   displayOutline = false,
   solidRender = false,
-  inkColor = [72, 72, 164],
+  inkColor = [72, 164, 164],
   lightPosition = [-100, 100, 0],
-  repeat = [1, 1],
+  repeat = [2, 2],
   hatchTextures,
   paperTexture,
 }) => {
@@ -248,7 +248,7 @@ export const DrawingMaterial: React.FC<DrawingMaterialProps> = ({
       useTexture( './level/drawing/hatch_3.jpg'),
       useTexture( './level/drawing/hatch_4.jpg'),
       useTexture( './level/drawing/hatch_5.jpg'),]
-    paperTexture =useTexture( './level/drawing/paper.jpg')
+    paperTexture =useTexture( './snow.jpg')
 
     return (
     <drawingShaderMaterial

@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber'
 import { MENU_ITEMS, type MenuActionId } from '@config/menuConfig'
 import type { Keybinds } from '@models/Keybinds'
 import { Suspense, useMemo, useState } from 'react'
+import { Background } from '@components/menu/background.tsx';
 interface MainMenuThreeProps {
   keybinds: Keybinds
   onAction: (id: MenuActionId) => void
@@ -55,16 +56,15 @@ export function MainMenuThree({ keybinds, onAction }: MainMenuThreeProps) {
         {MENU_ITEMS.map((item, index) => (
           <ThreeMenuButton
             key={item.id}
-            label={`${item.label} three`}
+            label={`${item.label}`}
             position={positions[index]}
             active={activeIndex === index}
             onHover={() => setActiveIndex(index)}
             onClick={() => onAction(item.id)}
           />
         ))}
-
-
         <OrbitControls />
+
       </Canvas>
     </div>
   )

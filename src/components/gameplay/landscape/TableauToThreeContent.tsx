@@ -12,38 +12,65 @@ import LinearTree from '@components/gameplay/levels/drawing/LinearTree.tsx';
 import { DrawingMaterial } from '@shaders/drawing/DrawingMaterial.tsx';
 import { DrawedGrass } from '../levels/drawing/DrawedGrass.tsx';
 import { Euler } from 'three';
+import { RoundedTree2, RoundedTree3 } from '@components/gameplay/levels/drawing/RoundedTree.tsx';
+import { useTexture } from '@react-three/drei';
 
 
-export const TableauToThreeContent = (props: { mapToPlay: MapToPlay }) => {
+export const TableauToThreeContent = (props: { mapToPlay: MapToPlay , callback?:()=>void}) => {
     const contentRef = useRef<typeof ContentRender>(null);
+    const backgroundTexture = useTexture('./aquarelle.jpg');
 
     useEffect(() => {
-        if (props.mapToPlay.mapType == "drawing") {
+        if (props.mapToPlay.mapType == "drawing"||props.mapToPlay.mapType == "engraving") {
+            let texturePath = "./level/drawing/hatch_";
+            let extension = ".jpg";
+            if(props.mapToPlay.mapType == "engraving"){
+                texturePath = "./level/engraving/ray_";
+                extension = ".png";
+            }
+
             props.mapToPlay.tableau?.allKases().flat().forEach((kase, index) => {
                 let kaseRender;
                 switch (kase.content) {
                     case "water":
-                        kaseRender =<></>;
+
+                        kaseRender = <Zone texturePath={`${texturePath}1${extension}`}></Zone>;
                         break;
 
                     case "sand":
-                        kaseRender = <></>
+                        kaseRender = <Zone texturePath={`${texturePath}2${extension}`}></Zone>
                         break;
 
                     case "tree":
-                        kaseRender =<group rotation={new Euler(0,Math.random()*6,0)}><LinearTree></LinearTree></group>
+                        if (Math.random() < 0.5) {
+                            kaseRender = <><Zone texturePath={`${texturePath}3${extension}`}></Zone><RoundedTree2></RoundedTree2></>
+                        } else if (Math.random() < 0.1) {
+                            kaseRender = <><Zone texturePath={`${texturePath}3${extension}`}></Zone><LinearTree></LinearTree></>
+                        } else {
+                            kaseRender = <><Zone texturePath={`${texturePath}3${extension}`}></Zone><RoundedTree3></RoundedTree3></>
+                        }
+
                         break;
                     case "grass":
-                        kaseRender = <DrawedGrass ></DrawedGrass>
+                        kaseRender = <>
+                            <Zone texturePath={`${texturePath}1${extension}`}></Zone>
+                            <DrawedGrass></DrawedGrass>
+                            </>
                         break;
-                    case "mountain":
-                        kaseRender = <mesh>
-                            <sphereGeometry args={[Math.random(),12,12]}></sphereGeometry>
-                        <DrawingMaterial></DrawingMaterial>
-                        </mesh>
+                    case "mountain": {
+                        const rocks = []
+                        for (let i = 0; i < Math.random() * 3; i++) {
+                            rocks.push(<mesh position={[Math.random() * 0.5, 0, Math.random() * 0.5]} >
+                                <sphereGeometry args={[Math.random() + 0.1, 12, 12]}></sphereGeometry>
+                                <DrawingMaterial></DrawingMaterial>
+                            </mesh>)
+                        }
+
+                        kaseRender = <><Zone texturePath={`${texturePath}3${extension}`}></Zone>{rocks}</>
+                    }
                         break;
                     default:
-                        kaseRender = <Zone></Zone>
+                        kaseRender = <Zone texturePath={`${texturePath}1${extension}`}></Zone>
                 }
                 props.mapToPlay.tableau?.allKases().flat().forEach((kase, index) => {
 
@@ -103,7 +130,7 @@ export const TableauToThreeContent = (props: { mapToPlay: MapToPlay }) => {
 
                                 //placer un mur invisible
 
-                                contentRef.current?.setWithKase(new Kase2D(kase.x + dir.x, kase.y + dir.y),
+                                contentRef.current?.setWithKase(new Kase2D(kase.x + dir.x*1.2, kase.y + dir.y*1.2),
                                     <RigidBody type="fixed"><CylinderCollider
 
 
@@ -121,9 +148,10 @@ export const TableauToThreeContent = (props: { mapToPlay: MapToPlay }) => {
 
         }
 
+        console.log("rendering tableau", props.mapToPlay.tableau);
+        if(props.callback)props.callback()
     }, [props.mapToPlay
     ]);
-    console.log("land")
     useFrame((state) => (GrassWindMaterial.uniforms.time.value = state.clock.elapsedTime / 4))
 
     useImperativeHandle(props.ref, () => ({
@@ -166,6 +194,8 @@ export const TableauToThreeContent = (props: { mapToPlay: MapToPlay }) => {
         }
     }));
     return <>
+
+        <primitive attach="background" object={backgroundTexture} />
         <ContentRender ref={contentRef}
                        computePosition={computeAveragePositionHexa}/>
 

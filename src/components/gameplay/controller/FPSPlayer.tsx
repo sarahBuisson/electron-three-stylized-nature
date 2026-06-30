@@ -20,7 +20,6 @@ export const FPSPlayer = (props: { position?: Vector3, rotation?: Euler })=>
     const [, get] = useKeyboardControls();
     const rapier = useRapier();
     useEffect(() => {
-        console.log(controlRef)
         if(controlRef.current?.camera)
         controlRef.current.camera.rotation.set(props.rotation?.x || 0, props.rotation?.y || 0, props.rotation?.z || 0);
     }, [controlRef]);

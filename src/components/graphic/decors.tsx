@@ -10,6 +10,7 @@ import { CatmullRomCurve3, Vector3 } from 'three';
 import { Color } from 'three';
 import { GrassWindMaterial } from '@components/gameplay/common/GrassWindMaterial.tsx';
 import CustomTubeGeometry from '@components/gameplay/common/CustomTubeGeometry.ts';
+import { TangentSpaceNormalMap } from 'three/src/constants';
 
 extend({FlatMaterial, SuperflatMaterial, SuperflatBisMaterial});
 
@@ -56,7 +57,6 @@ export function Tree(props: { position?: Vector3 | [number, number, number], hei
     const lineSize = 0.05;
     const baseSize = 1;
     let extraTriangles = null
-    console.log(props.numberOfLines)
     if (props.numberOfLines === 2) {
         extraTriangles = <>
             <mesh>
@@ -216,11 +216,15 @@ function moveHere(position: [number, number, number]) {
     console.log("moveHere")
 }
 
-export function Zone() {
-    const texture = useTexture("./sand.jpg");
+export function Zone(props:{texturePath?:string}) {
+    const texture = useTexture(props.texturePath||"./sand.jpg");
 
     return <mesh rotation={[-Math.PI / 2, 0, 0]}>
         <HexagonGeometry radius={1}></HexagonGeometry>
-        <meshStandardMaterial map={texture} fogColor={"white"}></meshStandardMaterial>
+       <superflatBisMaterial uTexture={texture} fogColor={"white"}
+                             ratioY={5.5}
+                             fogNear={1}
+        fogFar={6}
+       ></superflatBisMaterial>
     </mesh>
 }

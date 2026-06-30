@@ -11,7 +11,6 @@ class KaseLandscape extends Kase2D {
 
 const invRec2 = 1 / Math.sqrt(2);
 const invRec3 = 1 / Math.sqrt(3);
-console.log("invRec2", invRec3)
 
 function getPositionFromKase(kase: Kase2D): [number, number, number] {
     return [kase.x * 1.5, 0, (kase.x * 0.5 + kase.y) / invRec3]

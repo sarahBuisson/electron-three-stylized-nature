@@ -18,8 +18,8 @@ export function TitleScreen({ onStart }: TitleScreenProps) {
 
   return (
     <section className="title-screen" onClick={onStart}>
-      <h1>Prototype Gameplay</h1>
-      <p>Appuyez sur ENTREE, ESPACE ou cliquez pour continuer</p>
+      <h1>Find the spot were the photo in your inventory have been taken</h1>
+      <p>press Enter</p>
     </section>
   )
 }

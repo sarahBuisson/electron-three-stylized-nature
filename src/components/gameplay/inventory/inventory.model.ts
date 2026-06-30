@@ -9,11 +9,33 @@ export interface InventoryItem {
 
 const INVENTORY_STORAGE_KEY = 'etb.inventory.v1'
 
+function getInventoryStorage(): Storage | null {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  try {
+    return window.localStorage
+  } catch {
+    return null
+  }
+}
+
 export function createCameraInventoryItem(urlImage = '/inventory/camera.png'): InventoryItem {
   return {
     id: 'camera',
     name: 'Camera',
     type: 'Objet',
+    quantity: 1,
+    urlImage,
+    description: 'Clique pour ajouter une nouvelle photo.',
+  }
+}
+export function createSolutionPhotoInventoryItem(urlImage): InventoryItem {
+  return {
+    id: 'camera',
+    name: 'Photo',
+    type: 'Photo',
     quantity: 1,
     urlImage,
     description: 'Clique pour ajouter une nouvelle photo.',
@@ -27,34 +49,19 @@ export function createPhotoInventoryItem(urlImage: string, index = 1): Inventory
     type: 'Photo',
     quantity: 1,
     urlImage,
-    description: 'Nouvelle photo ajoutée à l’inventaire.',
+    description: 'new picture taken',
   }
 }
 
 export function readInventory(initialUrl = '/inventory/camera.png'): InventoryItem[] {
-  if (typeof window === 'undefined') {
-    return [createCameraInventoryItem(initialUrl)]
-  }
-
-  try {
-    const raw = window.localStorage.getItem(INVENTORY_STORAGE_KEY)
-    if (!raw) {
-      const initialItems = [createCameraInventoryItem(initialUrl)]
-      writeInventory(initialItems)
-      return initialItems
-    }
-
-    const parsed = JSON.parse(raw)
-    return Array.isArray(parsed) ? (parsed as InventoryItem[]) : [createCameraInventoryItem(initialUrl)]
-  } catch {
-    return [createCameraInventoryItem(initialUrl)]
-  }
+ return [createCameraInventoryItem(initialUrl)]
 }
 
 export function writeInventory(items: InventoryItem[]): void {
-  if (typeof window === 'undefined') {
+  const storage = getInventoryStorage()
+  if (!storage) {
     return
   }
 
-  window.localStorage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(items))
+  storage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(items))
 }

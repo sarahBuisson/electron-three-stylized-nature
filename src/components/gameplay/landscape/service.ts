@@ -36,10 +36,6 @@ export function initTableauAndLab() {
         tableau.randomKase().content = "sand"
         tableau.randomKase().content = "grass"
     }
-
-    tableau.neighbors(tableau.getKase(5, 5)!!).forEach((kase) => {
-        kase.content = "purple"
-    })
     return tableau
 }
 

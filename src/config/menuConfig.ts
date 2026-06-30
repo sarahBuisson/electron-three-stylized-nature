@@ -6,10 +6,9 @@ export interface MenuItem {
 }
 
 export const MENU_ITEMS: MenuItem[] = [
-  { id: 'new-game', label: 'Nouvelle Partie' },
-  { id: 'map-editor', label: 'Editeur de Carte' },
-  { id: 'rules', label: 'Regles' },
-  { id: 'options', label: 'Options' },
-  { id: 'quit', label: 'Quitter' },
+  { id: 'new-game', label: 'New Game' },
+  { id: 'map-editor', label: 'Editor' },
+
+  { id: 'quit', label: 'Exit' },
 ]
 

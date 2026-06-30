@@ -4,6 +4,7 @@ import { Canvas } from '@react-three/fiber';
 import { HexagonalInstances } from '@components/gameplay/common/HexagonalInstance/HexagonalInstances.tsx';
 import { OrbitControls } from '@react-three/drei';
 import { DrawedGrass } from '@components/gameplay/levels/drawing/DrawedGrass.tsx';
+import RoundedTree, { RoundedTree2, RoundedTree3 } from '@components/gameplay/levels/drawing/RoundedTree.tsx';
 
 
 const meta = {
@@ -70,4 +71,51 @@ export const LinearTreeStory: Story = {
 
     },
     render: (args) => <SceneWrapper {...args} />,
+};
+
+
+
+export const RoundedTree2Story: Story = {
+    args: {
+
+    },
+    render: (args) => <Canvas camera={{ position: [0, 15, 15], fov: 60 }}>
+        <color attach="background" args={['#0f0f1e']} />
+        <ambientLight intensity={0.5} />
+        <RoundedTree2></RoundedTree2>
+        <group position={[2,0,2]}>   <DrawedGrass></DrawedGrass></group>
+
+        <OrbitControls />
+        <gridHelper args={[50, 50, '#333', '#222']} />
+    </Canvas>,
+};
+
+export const RoundedTree3Story: Story = {
+    args: {
+
+    },
+    render: (args) => <Canvas camera={{ position: [0, 15, 15], fov: 60 }}>
+        <color attach="background" args={['#0f0f1e']} />
+        <ambientLight intensity={0.5} />
+        <RoundedTree3></RoundedTree3>
+        <group position={[2,0,2]}>   <DrawedGrass></DrawedGrass></group>
+
+        <OrbitControls />
+        <gridHelper args={[50, 50, '#333', '#222']} />
+    </Canvas>,
+};
+
+export const DrawedGrassStory: Story = {
+    args: {
+
+    },
+    render: (args) => <Canvas camera={{ position: [0, 15, 15], fov: 60 }}>
+        <color attach="background" args={['#0f0f1e']} />
+        <ambientLight intensity={0.5} />
+        <DrawedGrass></DrawedGrass>
+        <group position={[2,0,2]}>   <DrawedGrass></DrawedGrass></group>
+
+        <OrbitControls />
+        <gridHelper args={[50, 50, '#333', '#222']} />
+    </Canvas>,
 };

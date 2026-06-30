@@ -32,8 +32,8 @@ export function HexagonalWave({
   width = 10,
   height = 10,
   hexSize = 0.1,
-  particleSize = 1,
-  particleColor = '#0088ff',
+  particleSize = 2,
+  particleColor = '#eeeeff',
   waveSpeed = 1,
   waveAmplitude = 0.5,
   waveFrequency = 0.5,
@@ -98,7 +98,7 @@ export function HexagonalWave({
 
     return tex;
   }, []);*/
-    const texture2=useTexture("./level/japaneese/concentrique.png");
+    const texture2=useTexture("./level/drawing/wave3.png");
   return (
     <points ref={pointsRef}>
       <bufferGeometry>

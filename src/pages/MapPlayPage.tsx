@@ -1,7 +1,7 @@
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Canvas } from '@react-three/fiber';
-import { KeyboardControls } from '@react-three/drei';
+import { Canvas, useThree } from '@react-three/fiber';
+import { KeyboardControls, useTexture } from '@react-three/drei';
 import { Physics } from '@react-three/rapier';
 import { PerspectiveCamera } from '@react-three/drei';
 import type { HexagonalTableau } from '@services/game/labyrinth/tableau.ts';
@@ -10,47 +10,108 @@ import { loadMapForPlay, MapToPlay } from '@utils/mapPlayStorage';
 import { TableauToThreeContent } from '@components/gameplay/landscape/TableauToThreeContent.tsx';
 import { FPSPlayer } from '@components/gameplay/controller/FPSPlayer';
 import { KEYBIND_PRESETS } from '@config/keybindPresets.ts';
-import type { Camera } from '@react-three/fiber/dist/declarations/src/core/utils';
 import { GroundPlane } from '@components/gameplay/oldGameplay/GroundPlane.tsx';
 import { InventoryList } from '@components/gameplay/inventory/InventoryList';
 import { createPhotoInventoryItem, readInventory, type InventoryItem, writeInventory } from '@components/gameplay/inventory/inventory.model';
 import './MapPlayPage.css';
-import { Vector3 } from 'three';
+import { Vector3, type PerspectiveCamera as PerspectiveCameraType } from 'three';
+
+// eslint-disable-next-line no-unused-vars
+type CaptureHandler = (handler: () => Promise<string>) => void;
+
+function SceneCaptureBridge({ onCaptureReady }: { onCaptureReady: CaptureHandler }) {
+    const { gl, scene, camera } = useThree();
+
+    const captureView = useCallback(async () => {
+        gl.render(scene, camera);
+
+        return new Promise<string>((resolve, reject) => {
+            gl.domElement.toBlob((blob) => {
+                if (!blob) {
+                    reject(new Error('Unable to capture the current camera view.'));
+                    return;
+                }
+
+                resolve(URL.createObjectURL(blob));
+            }, 'image/png');
+        });
+    }, [camera, gl, scene]);
+
+    useEffect(() => {
+        onCaptureReady(captureView);
+    }, [captureView, onCaptureReady]);
+
+    return null;
+}
+
+function SceneReady(props: { callback: () => Promise<void> }) {
+    useEffect(() => {
+        console.log('ready');
+    }, []);
+
+}
 
 export function MapPlayPage() {
     const navigate = useNavigate();
-    const [tableau, setTableau] = useState<HexagonalTableau<KaseLandscape> | null>(null);
-    const [gameMap, setGameMap] = useState<MapToPlay | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [solutionUrl, setSolutionUrl] = useState<string | null>(null);
+    const initialMap = useMemo(() => loadMapForPlay(), []);
+    const [tableau] = useState<HexagonalTableau<KaseLandscape> | null>(() => initialMap?.tableau ?? null);
+    const [gameMap] = useState<MapToPlay | null>(() => initialMap ?? null);
+    const [error] = useState<string | null>(() => initialMap ? null : 'No map available to play. Please create a map in the editor first.');
+    const [solutionUrl] = useState<string | null>('/inventory/camera.png');
     const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(() => readInventory('/inventory/camera.png'));
-    const cameraSolution = useRef<Camera | null>(null);
+    const [playerPosition, setPlayerPosition] = useState<Vector3 | null>(() => initialMap ? new Vector3(initialMap.start.x, 2, initialMap.start.y) : null);
+    const cameraSolution = useRef<PerspectiveCameraType | null>(null);
+    const captureViewRef = useRef<(() => Promise<string>) | null>(null);
     const keybinds = KEYBIND_PRESETS.AZERTY;
 
+    const registerCaptureView = useCallback((capture: () => Promise<string>) => {
+        captureViewRef.current = capture;
+    }, []);
+
     useEffect(() => {
-        const loadedMap = loadMapForPlay();
+        writeInventory(inventoryItems);
+    }, [inventoryItems]);
 
-        if (!loadedMap) {
-            setError(previousError => previousError ?? 'No map available to play. Please create a map in the editor first.');
-            setTimeout(() => navigate('/map-editor'), 3000);
-            return;
+    useEffect(() => {
+        if (!initialMap) {
+            const timeoutId = window.setTimeout(() => {
+                navigate('/map-editor');
+            }, 3000);
+
+            return () => {
+                window.clearTimeout(timeoutId);
+            };
         }
+    }, [initialMap, navigate]);
 
-        setGameMap(loadedMap);
-        setTableau(loadedMap.tableau);
-        setSolutionUrl('/inventory/camera.png');
-    }, [navigate]);
+    const handleCameraClick = async () => {
+        const photoUrl = captureViewRef.current
+            ? await captureViewRef.current().catch(() => solutionUrl ?? '/inventory/camera.png')
+            : (solutionUrl ?? '/inventory/camera.png');
 
-    const handleCameraClick = () => {
         setInventoryItems((previousItems) => {
             const nextItems = [...previousItems];
             const photoCount = previousItems.filter((item) => item.type === 'Photo').length + 1;
-            const photoItem = createPhotoInventoryItem(solutionUrl ?? '/inventory/camera.png', photoCount);
+            const photoItem = createPhotoInventoryItem(photoUrl, photoCount);
             nextItems.push(photoItem);
-            writeInventory(nextItems);
             return nextItems;
         });
     };
+    const handleSolutionSnapshot = async () => {
+        const photoUrl = captureViewRef.current
+            ? await captureViewRef.current().catch(() => solutionUrl ?? '/inventory/camera.png')
+            : (solutionUrl ?? '/inventory/camera.png');
+
+        setInventoryItems((previousItems) => {
+            const nextItems = [...previousItems];
+            const photoCount = previousItems.filter((item) => item.type === 'Photo').length + 1;
+            const photoItem = createPhotoInventoryItem(photoUrl, photoCount);
+            nextItems.push(photoItem);
+            return nextItems;
+        });
+    };
+
+    const spawnOptions = tableau?.allKases().filter((kase) => kase.content === 'grass') ?? [];
 
     if (error) {
         return (
@@ -96,12 +157,13 @@ export function MapPlayPage() {
 
             <Canvas gl={{ antialias: true }} shadows>
                 <KeyboardControls map={keybinds}>
+                    <Suspense fallback={null}>
+
                     <PerspectiveCamera ref={cameraSolution} position={[gameMap.solution.x, 2, gameMap.solution.y]} />
+                    <SceneCaptureBridge onCaptureReady={registerCaptureView} />
 
                     <Physics gravity={[0, -9.81, 0]}>
                         <PerspectiveCamera makeDefault position={[0, 2, 5]} fov={75} />
-
-                        <color args={['#87CEEB']} attach="background" />
 
                         <ambientLight intensity={0.6} />
                         <directionalLight
@@ -113,12 +175,13 @@ export function MapPlayPage() {
                         />
                         <hemisphereLight args={['#87CEEB', '#6B8E23', 0.5]} />
                         <GroundPlane position={[0, 0, 0]} size={tableau.sizeX * 4} />
-                        <FPSPlayer position={new Vector3(gameMap.start.x, 2, gameMap.start.y)} />
+                        <FPSPlayer position={playerPosition ?? new Vector3(gameMap.start.x, 2, gameMap.start.y)} />
 
-                        <TableauToThreeContent mapToPlay={gameMap} />
+                        <TableauToThreeContent mapToPlay={gameMap} callback={handleCameraClick}/>
 
                         <fog attach="fog" args={['#87CEEB', 10, 100]} />
                     </Physics>
+                    </Suspense>
                 </KeyboardControls>
             </Canvas>
 

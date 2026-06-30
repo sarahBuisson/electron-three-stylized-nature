@@ -20,7 +20,7 @@ const TERRAIN_TYPES = [
 ];
 export function MapEditorPage() {
   const navigate = useNavigate();
-  const [type,setType] = useState<string>("geometric");
+  const [type,setType] = useState<string>("drawing");
   const [tableau, setTableau] = useState<HexagonalTableau<KaseLandscape>>(() => initTableauAndLab());
   const [selectedTool, setSelectedTool] = useState<ToolType>('brush');
   const [selectedTerrain, setSelectedTerrain] = useState<string>('zone');
@@ -86,10 +86,9 @@ export function MapEditorPage() {
   );
   // Gestion du mode Play
   const handlePlayMap = useCallback(() => {
-    const kaseLandscapes = tableau.allKases().filter(kase => kase.content === 'grass');
-    const start = kaseLandscapes[Math.floor(Math.random() * kaseLandscapes.length)];
-    const solution = kaseLandscapes[Math.floor(Math.random() * kaseLandscapes.length)];
-    console.log("type", type)
+    const kaseLandscapes = tableau.allKases().filter(kase => kase.content != 'mountain' && kase.content != 'tree');
+    const start = kaseLandscapes[Math.floor(kaseLandscapes.length*Math.random())];
+    const solution = kaseLandscapes[Math.floor( kaseLandscapes.length*Math.random() )];
     saveMapForPlay(new MapToPlay(tableau, new Vector2(start.x, start.y), new Vector2(solution.x, solution.y), new Euler(0, Math.random() * Math.PI, 0), type));
     navigate('/map-play');
   }, [tableau, navigate, type]);
@@ -115,13 +114,7 @@ export function MapEditorPage() {
               <span className="size-label">
                 {mapSize.width}×{mapSize.height} ({mapSize.total} cells)
               </span>
-              <button
-                className="size-change-button"
-                onClick={() => setShowSizeModal(true)}
-                title="Change map size"
-              >
-                📐 Resize Map
-              </button>
+
             </div>
             <h2>type</h2>
             <select value={type} onChange={(e) => {

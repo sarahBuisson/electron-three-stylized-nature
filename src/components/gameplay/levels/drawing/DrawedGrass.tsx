@@ -1,10 +1,12 @@
 
 import { GrassWindMaterial } from '@components/gameplay/common/GrassWindMaterial.tsx';
-import { Svg} from '@react-three/drei';
+import { Svg, useTexture } from '@react-three/drei';
 export function DrawedGrass() {
 
 
-
-    return <Svg src={"./level/drawing/grass.svg"} fillMaterial={GrassWindMaterial}></Svg>
+    const texture = useTexture("./level/drawing/grass.png");
+    return <sprite position={[0, 0.5, 0]} >
+        <spriteMaterial  map={texture} ></spriteMaterial>
+    </sprite>
 
 }
