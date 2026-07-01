@@ -14,6 +14,7 @@ import { DrawedGrass } from '../levels/drawing/DrawedGrass.tsx';
 import { Euler } from 'three';
 import { RoundedTree2, RoundedTree3 } from '@components/gameplay/levels/drawing/RoundedTree.tsx';
 import { useTexture } from '@react-three/drei';
+import { GrassSpriteWindMaterial } from '@components/gameplay/common/SpriteWindMaterial.tsx';
 
 
 export const TableauToThreeContent = (props: { mapToPlay: MapToPlay , callback?:()=>void}) => {
@@ -45,7 +46,7 @@ export const TableauToThreeContent = (props: { mapToPlay: MapToPlay , callback?:
                         if (Math.random() < 0.5) {
                             kaseRender = <><Zone texturePath={`${texturePath}3${extension}`}></Zone><RoundedTree2></RoundedTree2></>
                         } else if (Math.random() < 0.1) {
-                            kaseRender = <><Zone texturePath={`${texturePath}3${extension}`}></Zone><LinearTree></LinearTree></>
+                            kaseRender = <group rotation={[0,Math.random(),0]}><Zone texturePath={`${texturePath}3${extension}`}></Zone><LinearTree></LinearTree></group>
                         } else {
                             kaseRender = <><Zone texturePath={`${texturePath}3${extension}`}></Zone><RoundedTree3></RoundedTree3></>
                         }
@@ -152,7 +153,11 @@ export const TableauToThreeContent = (props: { mapToPlay: MapToPlay , callback?:
         if(props.callback)props.callback()
     }, [props.mapToPlay
     ]);
-    useFrame((state) => (GrassWindMaterial.uniforms.time.value = state.clock.elapsedTime / 4))
+    useFrame((state) => {
+        GrassWindMaterial.uniforms.time.value = state.clock.elapsedTime / 4;
+        GrassSpriteWindMaterial.uniforms.time.value = state.clock.elapsedTime / 4;
+
+    })
 
     useImperativeHandle(props.ref, () => ({
 

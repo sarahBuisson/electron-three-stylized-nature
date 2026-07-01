@@ -1,7 +1,7 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Canvas, useThree } from '@react-three/fiber';
-import { KeyboardControls, useTexture } from '@react-three/drei';
+import { Cloud, KeyboardControls, useTexture } from '@react-three/drei';
 import { Physics } from '@react-three/rapier';
 import { PerspectiveCamera } from '@react-three/drei';
 import type { HexagonalTableau } from '@services/game/labyrinth/tableau.ts';
@@ -15,7 +15,7 @@ import { InventoryList } from '@components/gameplay/inventory/InventoryList';
 import { createPhotoInventoryItem, readInventory, type InventoryItem, writeInventory } from '@components/gameplay/inventory/inventory.model';
 import './MapPlayPage.css';
 import { Vector3, type PerspectiveCamera as PerspectiveCameraType } from 'three';
-
+import {Blob}from '@components/gameplay/common/blob/Blob'
 // eslint-disable-next-line no-unused-vars
 type CaptureHandler = (handler: () => Promise<string>) => void;
 
@@ -183,6 +183,15 @@ export function MapPlayPage() {
                     </Physics>
                     </Suspense>
                 </KeyboardControls>
+                <group position={[-10, 25, 30]}  scale={[1,1,4]}>
+                    <Cloud color={"white"}></Cloud>
+                </group>
+                <group position={[20, 25, -40]} scale={[3,3,4]}>
+                    <Cloud  color={"#ffffff"}></Cloud>
+                </group>
+                <group position={[47, 25, 15]}  scale={[2,4,4]}>
+                    <Cloud  color={"white"}></Cloud>
+                </group>
             </Canvas>
 
             {solutionUrl ? <img src={solutionUrl} alt="Solution" className="solution-image" /> : null}

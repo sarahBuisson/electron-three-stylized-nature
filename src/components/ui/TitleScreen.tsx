@@ -18,7 +18,7 @@ export function TitleScreen({ onStart }: TitleScreenProps) {
 
   return (
     <section className="title-screen" onClick={onStart}>
-      <h1>Find the spot were the photo in your inventory have been taken</h1>
+      <h1>Natural snapshot</h1>
       <p>press Enter</p>
     </section>
   )
