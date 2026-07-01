@@ -18,7 +18,7 @@ export function TitleScreen({ onStart }: TitleScreenProps) {
 
   return (
     <section className="title-screen" onClick={onStart}>
-      <h1>Natural snapshot</h1>
+      <h1>Abstract Hiking</h1>
       <p>press Enter</p>
     </section>
   )
