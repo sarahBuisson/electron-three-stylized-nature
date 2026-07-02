@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Euler, Vector2 } from 'three';
 import { createTestTableau } from '@utils/mapGenerator';
 import { MapToPlay, saveMapForPlay } from '@utils/mapPlayStorage';
+import { initTableauAndLab } from '@components/gameplay/landscape/service.ts';
 
 export function GameplayPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const tableau = createTestTableau(15, 15);
+    const tableau = initTableauAndLab();
 
     const playableKases = tableau.allKases().filter((kase) => kase.content!= 'mountain'&&kase.content!= 'tree');
     const start = playableKases[Math.floor(playableKases.length*Math.random())] ||tableau.allKases()[0];

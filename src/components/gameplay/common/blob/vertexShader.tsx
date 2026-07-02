@@ -4,6 +4,7 @@ uniform float u_time;
 uniform float u_color1;
 uniform float u_color2;
 uniform float u_color3;
+varying vec3 vNormal;
 
 varying vec2 vUv;
 varying float vDisplacement;
@@ -100,11 +101,12 @@ void main() {
     vDisplacement = cnoise(position + vec3(2.0 * u_time));
   
     vec3 newPosition = position + normal * (u_intensity * vDisplacement);
+    
   
     vec4 modelPosition = modelMatrix * vec4(newPosition, 1.0);
     vec4 viewPosition = viewMatrix * modelPosition;
     vec4 projectedPosition = projectionMatrix * viewPosition;
-  
+  vNormal = normalize(normalMatrix * normal);
     gl_Position = projectedPosition;
 }
 `;

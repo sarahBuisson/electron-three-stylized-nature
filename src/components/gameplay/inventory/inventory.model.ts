@@ -53,7 +53,7 @@ export function createPhotoInventoryItem(urlImage: string, index = 1): Inventory
   }
 }
 
-export function readInventory(initialUrl = '/inventory/camera.png'): InventoryItem[] {
+export function readInventory(initialUrl = './inventory/camera.png'): InventoryItem[] {
  return [createCameraInventoryItem(initialUrl)]
 }
 

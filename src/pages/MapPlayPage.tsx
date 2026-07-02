@@ -9,7 +9,7 @@ import type { KaseLandscape } from '@components/gameplay/landscape/service.ts';
 import { loadMapForPlay, MapToPlay } from '@utils/mapPlayStorage';
 import { TableauToThreeContent } from '@components/gameplay/landscape/TableauToThreeContent.tsx';
 import { FPSPlayer } from '@components/gameplay/controller/FPSPlayer';
-import { KEYBIND_PRESETS } from '@config/keybindPresets.ts';
+import { KEYBIND_PRESETS, type KeybindPresetType } from '@config/keybindPresets.ts';
 import { GroundPlane } from '@components/gameplay/oldGameplay/GroundPlane.tsx';
 import { InventoryList } from '@components/gameplay/inventory/InventoryList';
 import { createPhotoInventoryItem, readInventory, type InventoryItem, writeInventory } from '@components/gameplay/inventory/inventory.model';
@@ -57,13 +57,13 @@ export function MapPlayPage() {
     const [tableau] = useState<HexagonalTableau<KaseLandscape> | null>(() => initialMap?.tableau ?? null);
     const [gameMap] = useState<MapToPlay | null>(() => initialMap ?? null);
     const [error] = useState<string | null>(() => initialMap ? null : 'No map available to play. Please create a map in the editor first.');
-    const [solutionUrl] = useState<string | null>('/inventory/camera.png');
-    const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(() => readInventory('/inventory/camera.png'));
+    const [solutionUrl] = useState<string | null>('./inventory/camera.png');
+    const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(() => readInventory('./inventory/camera.png'));
     const [playerPosition, setPlayerPosition] = useState<Vector3 | null>(() => initialMap ? new Vector3(initialMap.start.x, 2, initialMap.start.y) : null);
     const cameraSolution = useRef<PerspectiveCameraType | null>(null);
     const captureViewRef = useRef<(() => Promise<string>) | null>(null);
-    const keybinds = KEYBIND_PRESETS.AZERTY;
-
+    const keybinds = KEYBIND_PRESETS.WASD;
+    const [keybindPreset, setKeybindPreset] = useState<KeybindPresetType>('WASD')
     const registerCaptureView = useCallback((capture: () => Promise<string>) => {
         captureViewRef.current = capture;
     }, []);

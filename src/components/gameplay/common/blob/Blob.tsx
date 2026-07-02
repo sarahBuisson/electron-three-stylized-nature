@@ -2,8 +2,7 @@ import React, { useMemo, useRef } from "react";
 import vertexShader from "./vertexShader";
 import fragmentShader from "./fragmentShader";
 import { useFrame } from "@react-three/fiber";
-import { MathUtils, type Mesh } from "three";
-import { DrawingMaterial } from '@shaders/drawing/DrawingMaterial.tsx';
+import { Color, MathUtils, type Mesh } from "three";
 
 export function Blob() {
     const mesh = useRef<Mesh>();
@@ -12,9 +11,10 @@ export function Blob() {
         return {
             u_time: { value: 0 },
             u_intensity: { value: 0.3 },
-            u_color1:{value:"#44FFaa"},
-            u_color2:{value:"#44aFfa"},
-            u_color3:{value:"#44FFff"}
+            uColor1:{value:new Color("#77aaaa")},
+            uColor2:{value:new Color("#335A7b")},
+            uColor3:{value:new Color("#88dFfa")},
+
         };
     });
 

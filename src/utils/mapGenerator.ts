@@ -70,7 +70,8 @@ export function createTestTableau(width: number, height: number): HexagonalTable
 
       if (distance < radius) {
         const kase = tableau.getKase(x, y);
-        if (kase) kase.content = 'water';
+
+        if (kase && Math.random()<0.5) kase.content = 'grass';
       }
     }
   }

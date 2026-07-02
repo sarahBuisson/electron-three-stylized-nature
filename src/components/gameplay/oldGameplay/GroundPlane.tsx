@@ -16,7 +16,7 @@ export function GroundPlane({ position, size }: GroundPlaneProps) {
   // On décale le centre vers le bas de THICKNESS/2 pour que la surface soit à y=position.y
   const groundY: [number, number, number] = [position[0], position[1] - THICKNESS / 2, position[2]]
 
-  const texture = useTexture("./level/drawing/hatch_3.jpg")
+  const texture = useTexture("./waveBackground.jpg")
   return (
     <RigidBody type="fixed" position={groundY} colliders="cuboid">
       {/* boxGeometry a une épaisseur réelle : plus de collisions fantômes */}
@@ -25,7 +25,7 @@ export function GroundPlane({ position, size }: GroundPlaneProps) {
           <meshStandardMaterial fogColor={"white"}></meshStandardMaterial>
 
 
-          <superflatBisMaterial uTexture={texture}   fogColor={new Color(0x005aa)}></superflatBisMaterial>
+          <superflatBisMaterial uTexture={texture}  ratioX={4} ratioY={4} fogColor={new Color(0x4A85CE)}></superflatBisMaterial>
       </mesh>
     </RigidBody>
   )
