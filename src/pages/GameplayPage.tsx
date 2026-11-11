@@ -1,18 +1,24 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Euler, Vector2 } from 'three';
 import { createTestTableau } from '@utils/mapGenerator';
 import { MapToPlay, saveMapForPlay } from '@utils/mapPlayStorage';
 import { initTableauAndLab } from '@components/gameplay/landscape/service.ts';
+import { findCentralSpawn } from '@components/gameplay/landscape/playerSpawn.ts';
 
 export function GameplayPage() {
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const tableau = initTableauAndLab();
 
     const playableKases = tableau.allKases().filter((kase) => kase.content!= 'mountain'&&kase.content!= 'tree');
-    const start = playableKases[Math.floor(playableKases.length*Math.random())] ||tableau.allKases()[0];
+    const start = findCentralSpawn(tableau);
+    if (!start) {
+      setError('The map needs at least one tile without a tree or mountain to start playing.');
+      return;
+    }
     const solution = playableKases[Math.floor(playableKases.length*Math.random())] || start;
 console.log("start", start,(playableKases.length*Math.random()), "solution", solution,  playableKases.map(kase => kase.content));
     saveMapForPlay(
@@ -28,5 +34,5 @@ console.log("start", start,(playableKases.length*Math.random()), "solution", sol
     navigate('/map-play', { replace: true });
   }, [navigate]);
 
-  return <div>Initialisation de la map...</div>;
+  return error ? <div role="alert">{error}</div> : <div>Initialisation de la map...</div>;
 }

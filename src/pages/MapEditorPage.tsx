@@ -7,6 +7,7 @@ import type { HexagonalTableau } from '@services/game/labyrinth/tableau.ts';
 import { floodFill } from '@utils/floodFill';
 import { createEmptyTableau, createTestTableau } from '@utils/mapGenerator';
 import { MapToPlay, saveMapForPlay } from '@utils/mapPlayStorage';
+import { findCentralSpawn } from '@components/gameplay/landscape/playerSpawn';
 import './MapEditorPage.css';
 import { Euler, Vector2 } from 'three';
 type ToolType = 'brush' | 'bucket';
@@ -27,8 +28,10 @@ export function MapEditorPage() {
   const [selectedKase, setSelectedKase] = useState<KaseLandscape | null>(null);
   const [updateCounter, setUpdateCounter] = useState(0);
   const [showSizeModal, setShowSizeModal] = useState(false);
+  const [playError, setPlayError] = useState<string | null>(null);
   // Force un re-render quand le tableau change
   const forceUpdate = useCallback(() => {
+    setPlayError(null);
     setUpdateCounter((c) => c + 1);
   }, []);
   // Gestion du pinceau
@@ -70,6 +73,7 @@ export function MapEditorPage() {
         ? createTestTableau(width, height)
         : createEmptyTableau(width, height);
       setTableau(newTableau);
+      setPlayError(null);
       setSelectedKase(null);
       forceUpdate();
     },
@@ -87,7 +91,12 @@ export function MapEditorPage() {
   // Gestion du mode Play
   const handlePlayMap = useCallback(() => {
     const kaseLandscapes = tableau.allKases().filter(kase => kase.content != 'mountain' && kase.content != 'tree');
-    const start = kaseLandscapes[Math.floor(kaseLandscapes.length*Math.random())];
+    const start = findCentralSpawn(tableau);
+    if (!start) {
+      setPlayError('The map needs at least one tile without a tree or mountain to start playing.');
+      return;
+    }
+    setPlayError(null);
     const solution = kaseLandscapes[Math.floor( kaseLandscapes.length*Math.random() )];
     saveMapForPlay(new MapToPlay(tableau, new Vector2(start.x, start.y), new Vector2(solution.x, solution.y), new Euler(0, Math.random() * Math.PI, 0), type));
     navigate('/map-play');
@@ -106,6 +115,7 @@ export function MapEditorPage() {
           </button>
         </div>
       </div>
+      {playError && <p role="alert">{playError}</p>}
       <div className="map-editor-container">
         <div className="map-editor-sidebar">
           <section className="editor-section">

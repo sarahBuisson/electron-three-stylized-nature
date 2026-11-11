@@ -13,6 +13,7 @@ export class MapToPlay{
   solution:Vector2;
   solutionOrientation:Euler
   mapType:string="geometric";
+  creation = new Date();
   constructor(tableau: HexagonalTableau<KaseLandscape>,
               start:Vector2,solution:Vector2,solutionOrientation:Euler,
               mapType:string="geometric"){

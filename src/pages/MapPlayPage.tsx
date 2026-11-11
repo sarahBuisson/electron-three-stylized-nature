@@ -8,13 +8,15 @@ import type { HexagonalTableau } from '@services/game/labyrinth/tableau.ts';
 import type { KaseLandscape } from '@components/gameplay/landscape/service.ts';
 import { loadMapForPlay, MapToPlay } from '@utils/mapPlayStorage';
 import { TableauToThreeContent } from '@components/gameplay/landscape/TableauToThreeContent.tsx';
+import { computeAveragePositionHexa } from '@components/gameplay/landscape/hexPosition.ts';
+import { findCentralSpawn } from '@components/gameplay/landscape/playerSpawn.ts';
 import { FPSPlayer } from '@components/gameplay/controller/FPSPlayer';
 import { KEYBIND_PRESETS, type KeybindPresetType } from '@config/keybindPresets.ts';
 import { GroundPlane } from '@components/gameplay/oldGameplay/GroundPlane.tsx';
 import { InventoryList } from '@components/gameplay/inventory/InventoryList';
 import { createPhotoInventoryItem, readInventory, type InventoryItem, writeInventory } from '@components/gameplay/inventory/inventory.model';
 import './MapPlayPage.css';
-import { Vector3, type PerspectiveCamera as PerspectiveCameraType } from 'three';
+import { type PerspectiveCamera as PerspectiveCameraType } from 'three';
 import {Blob}from '@components/gameplay/common/blob/Blob'
 // eslint-disable-next-line no-unused-vars
 type CaptureHandler = (handler: () => Promise<string>) => void;
@@ -56,10 +58,18 @@ export function MapPlayPage() {
     const initialMap = useMemo(() => loadMapForPlay(), []);
     const [tableau] = useState<HexagonalTableau<KaseLandscape> | null>(() => initialMap?.tableau ?? null);
     const [gameMap] = useState<MapToPlay | null>(() => initialMap ?? null);
-    const [error] = useState<string | null>(() => initialMap ? null : 'No map available to play. Please create a map in the editor first.');
+    const spawn = useMemo(() => initialMap ? findCentralSpawn(initialMap.tableau) : null, [initialMap]);
+    const error = !initialMap
+        ? 'No map available to play. Please create a map in the editor first.'
+        : !spawn ? 'The map needs at least one tile without a tree or mountain to start playing.' : null;
     const [solutionUrl] = useState<string | null>('./inventory/camera.png');
     const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(() => readInventory('./inventory/camera.png'));
-    const [playerPosition, setPlayerPosition] = useState<Vector3 | null>(() => initialMap ? new Vector3(initialMap.start.x, 2, initialMap.start.y) : null);
+    const playerPosition = useMemo(() => {
+        if (!spawn) return null;
+        const position = computeAveragePositionHexa(1, [spawn]);
+        position.y = 2;
+        return position;
+    }, [spawn]);
     const cameraSolution = useRef<PerspectiveCameraType | null>(null);
     const captureViewRef = useRef<(() => Promise<string>) | null>(null);
     const keybinds = KEYBIND_PRESETS.WASD;
@@ -70,6 +80,7 @@ export function MapPlayPage() {
 
     useEffect(() => {
         writeInventory(inventoryItems);
+        console.log("inventoryItems", inventoryItems);
     }, [inventoryItems]);
 
     useEffect(() => {
@@ -84,6 +95,11 @@ export function MapPlayPage() {
         }
     }, [initialMap, navigate]);
 
+    const initGame = async () => {
+    await handleCameraClick();
+    }
+
+
     const handleCameraClick = async () => {
         const photoUrl = captureViewRef.current
             ? await captureViewRef.current().catch(() => solutionUrl ?? '/inventory/camera.png')
@@ -94,30 +110,16 @@ export function MapPlayPage() {
             const photoCount = previousItems.filter((item) => item.type === 'Photo').length + 1;
             const photoItem = createPhotoInventoryItem(photoUrl, photoCount);
             nextItems.push(photoItem);
+            console.log("handleCameraClick", nextItems);
             return nextItems;
         });
     };
-    const handleSolutionSnapshot = async () => {
-        const photoUrl = captureViewRef.current
-            ? await captureViewRef.current().catch(() => solutionUrl ?? '/inventory/camera.png')
-            : (solutionUrl ?? '/inventory/camera.png');
-
-        setInventoryItems((previousItems) => {
-            const nextItems = [...previousItems];
-            const photoCount = previousItems.filter((item) => item.type === 'Photo').length + 1;
-            const photoItem = createPhotoInventoryItem(photoUrl, photoCount);
-            nextItems.push(photoItem);
-            return nextItems;
-        });
-    };
-
-    const spawnOptions = tableau?.allKases().filter((kase) => kase.content === 'grass') ?? [];
 
     if (error) {
         return (
             <div className="map-play-error">
                 <div className="error-content">
-                    <h1> No Map Found</h1>
+                    <h1>Cannot Play Map</h1>
                     <p>{error}</p>
                     <button onClick={() => navigate('/map-editor')}>
                         Return to Editor
@@ -127,7 +129,7 @@ export function MapPlayPage() {
         );
     }
 
-    if (!tableau || !gameMap) {
+    if (!tableau || !gameMap || !playerPosition) {
         return (
             <div className="map-play-loading">
                 <div className="loading-content">
@@ -159,7 +161,6 @@ export function MapPlayPage() {
                 <KeyboardControls map={keybinds}>
                     <Suspense fallback={null}>
 
-                    <PerspectiveCamera ref={cameraSolution} position={[gameMap.solution.x, 2, gameMap.solution.y]} />
                     <SceneCaptureBridge onCaptureReady={registerCaptureView} />
 
                     <Physics gravity={[0, -9.81, 0]}>
@@ -175,7 +176,7 @@ export function MapPlayPage() {
                         />
                         <hemisphereLight args={['#87CEEB', '#6B8E23', 0.5]} />
                         <GroundPlane position={[0, 0, 0]} size={tableau.sizeX * 4} />
-                        <FPSPlayer position={playerPosition ?? new Vector3(gameMap.start.x, 2, gameMap.start.y)} />
+                        <FPSPlayer position={playerPosition} />
 
                         <TableauToThreeContent mapToPlay={gameMap} callback={handleCameraClick}/>
 

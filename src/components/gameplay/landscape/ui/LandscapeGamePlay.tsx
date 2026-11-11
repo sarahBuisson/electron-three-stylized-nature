@@ -65,11 +65,10 @@ export function LandscapeGamePlay() {
         console.log("initGame")
 
         if(landscapeSceneRef.current) {
-            console.log("initGame__")
-            setSolution(landscapeSceneRef.current.moveToRandom())
-            setPictureUrl(landscapeSceneRef.current.savePicture())
+            console.log("initGame__"//   setSolution(landscapeSceneRef.current.moveToRandom())
+            //setPictureUrl(landscapeSceneRef.current.savePicture())
             console.log(pictureUrl)
-            landscapeSceneRef.current.moveToRandom()
+           // landscapeSceneRef.current.moveToRandom()
         }
     }
     useEffect(() => {

@@ -1,6 +1,6 @@
-import React, { useEffect, useImperativeHandle, useRef } from 'react';
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { GrassCase, Mountain, Sand, TreeCase, Water, Zone } from '../../graphic/decors.tsx';
-import { computeAveragePositionHexa, ContentRender } from './ContentRender.tsx';
+import { computeAveragePositionHexa, ContentRender, type ContentRenderHandle } from './ContentRender.tsx';
 import { Kase2D, type Tableau } from '@services/game/labyrinth/tableau.ts';
 import type { KaseLandscape } from '@components/gameplay/landscape/service.ts';
 import { GrassWindMaterial } from '@components/gameplay/common/GrassWindMaterial.tsx';
@@ -18,10 +18,13 @@ import { GrassSpriteWindMaterial } from '@components/gameplay/common/SpriteWindM
 
 
 export const TableauToThreeContent = (props: { mapToPlay: MapToPlay , callback?:()=>void}) => {
-    const contentRef = useRef<typeof ContentRender>(null);
+    const contentRef = useRef<ContentRenderHandle>(null);
     const backgroundTexture = useTexture('./aquarelle.jpg');
-
+const [alreadyCalled, setAlreadyCalled] = useState(false);
     useEffect(() => {
+        if(alreadyCalled) return;
+        setAlreadyCalled(true);
+        console.log("start rendering tableau", props.mapToPlay.creation);
         if (props.mapToPlay.mapType == "drawing"||props.mapToPlay.mapType == "engraving") {
             let texturePath = "./level/drawing/hatch_";
             let extension = ".jpg";
@@ -150,7 +153,6 @@ export const TableauToThreeContent = (props: { mapToPlay: MapToPlay , callback?:
         }
 
         console.log("rendering tableau", props.mapToPlay.tableau);
-        if(props.callback)props.callback()
     }, [props.mapToPlay
     ]);
     useFrame((state) => {
@@ -202,6 +204,7 @@ export const TableauToThreeContent = (props: { mapToPlay: MapToPlay , callback?:
 
         <primitive attach="background" object={backgroundTexture} />
         <ContentRender ref={contentRef}
+                       onRendered={props.callback}
                        computePosition={computeAveragePositionHexa}/>
 
     </>
