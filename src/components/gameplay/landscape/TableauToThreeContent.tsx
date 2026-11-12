@@ -1,8 +1,7 @@
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GrassCase, Mountain, Sand, TreeCase, Water, Zone } from '../../graphic/decors.tsx';
 import { computeAveragePositionHexa, ContentRender, type ContentRenderHandle } from './ContentRender.tsx';
-import { Kase2D, type Tableau } from '@services/game/labyrinth/tableau.ts';
-import type { KaseLandscape } from '@components/gameplay/landscape/service.ts';
+import { Kase2D } from '@services/game/labyrinth/tableau.ts';
 import { GrassWindMaterial } from '@components/gameplay/common/GrassWindMaterial.tsx';
 import { useFrame } from '@react-three/fiber';
 import { CylinderCollider, RigidBody } from '@react-three/rapier';
@@ -11,7 +10,6 @@ import type { MapToPlay } from '@utils/mapPlayStorage.ts';
 import LinearTree from '@components/gameplay/levels/drawing/LinearTree.tsx';
 import { DrawingMaterial } from '@shaders/drawing/DrawingMaterial.tsx';
 import { DrawedGrass } from '../levels/drawing/DrawedGrass.tsx';
-import { Euler } from 'three';
 import { RoundedTree2, RoundedTree3 } from '@components/gameplay/levels/drawing/RoundedTree.tsx';
 import { useTexture } from '@react-three/drei';
 import { GrassSpriteWindMaterial } from '@components/gameplay/common/SpriteWindMaterial.tsx';
@@ -23,7 +21,7 @@ export const TableauToThreeContent = (props: { mapToPlay: MapToPlay , callback?:
 const [alreadyCalled, setAlreadyCalled] = useState(false);
     useEffect(() => {
         if(alreadyCalled) return;
-        setAlreadyCalled(true);
+
         console.log("start rendering tableau", props.mapToPlay.creation);
         if (props.mapToPlay.mapType == "drawing"||props.mapToPlay.mapType == "engraving") {
             let texturePath = "./level/drawing/hatch_";
@@ -33,7 +31,7 @@ const [alreadyCalled, setAlreadyCalled] = useState(false);
                 extension = ".png";
             }
 
-            props.mapToPlay.tableau?.allKases().flat().forEach((kase, index) => {
+            props.mapToPlay.tableau?.allKases().flat().forEach((kase) => {
                 let kaseRender;
                 switch (kase.content) {
                     case "water":
@@ -76,7 +74,7 @@ const [alreadyCalled, setAlreadyCalled] = useState(false);
                     default:
                         kaseRender = <Zone texturePath={`${texturePath}1${extension}`}></Zone>
                 }
-                props.mapToPlay.tableau?.allKases().flat().forEach((kase, index) => {
+                props.mapToPlay.tableau?.allKases().flat().forEach((kase) => {
 
                     const nei = props.mapToPlay.tableau.neighbors(kase);
                     if (nei.length < 6)
@@ -98,11 +96,12 @@ const [alreadyCalled, setAlreadyCalled] = useState(false);
 
                 })
                 contentRef.current?.setWithKase(kase, kaseRender);
+                setAlreadyCalled(true);
                 return;
             });
         }
         if (props.mapToPlay.mapType == "geometric") {
-            props.mapToPlay.tableau?.allKases().flat().forEach((kase, index) => {
+            props.mapToPlay.tableau?.allKases().flat().forEach((kase) => {
                 let kaseRender;
                 switch (kase.content) {
                     case "water":
@@ -125,7 +124,7 @@ const [alreadyCalled, setAlreadyCalled] = useState(false);
                     default:
                         kaseRender = <Zone></Zone>
                 }
-                props.mapToPlay.tableau?.allKases().flat().forEach((kase, index) => {
+                props.mapToPlay.tableau?.allKases().flat().forEach((kase) => {
 
                     const nei = props.mapToPlay.tableau.neighbors(kase);
                     if (nei.length < 6)
@@ -136,8 +135,6 @@ const [alreadyCalled, setAlreadyCalled] = useState(false);
 
                                 contentRef.current?.setWithKase(new Kase2D(kase.x + dir.x*1.2, kase.y + dir.y*1.2),
                                     <RigidBody type="fixed"><CylinderCollider
-
-
                                         friction={0.5}
                                         restitution={0.5}
                                         args={[1, 1,]}></CylinderCollider>
@@ -153,53 +150,13 @@ const [alreadyCalled, setAlreadyCalled] = useState(false);
         }
 
         console.log("rendering tableau", props.mapToPlay.tableau);
-    }, [props.mapToPlay
-    ]);
+    }, [props.mapToPlay, alreadyCalled ]);
     useFrame((state) => {
         GrassWindMaterial.uniforms.time.value = state.clock.elapsedTime / 4;
         GrassSpriteWindMaterial.uniforms.time.value = state.clock.elapsedTime / 4;
 
     })
 
-    useImperativeHandle(props.ref, () => ({
-
-        setWithKase(kase: Kase2D, element: React.JSX.Element) {
-            const position = computePosition(kaseSize, [kase]);
-            contentMap.set(computeKey(position), <group position={position}>{element}</group>);
-            setContentMap(new Map(contentMap));
-        },
-
-        setNearKase(kase: Kase2D, element: React.JSX.Element) {
-            const position = computePosition(kaseSize, [kase]);
-            contentMap.set(computeKey(position), <group position={position}>{element}</group>);
-            setContentMap(new Map(contentMap));
-        },
-        setBetweenKases(element: React.JSX.Element, kase1: Kase2D, kase2: Kase2D) {
-
-            const position = computePosition(kaseSize, [kase1, kase2]);
-
-            contentMap.set((computeKey(position)), element);
-            setContentMap(new Map(contentMap))
-        },
-        setAtCornerBetweenKases(element: React.JSX.Element, kases: Kase2D[]) {
-
-            const position = computePosition(kaseSize, kases);
-
-            contentMap.set((computeKey(position)), element);
-            setContentMap(new Map(contentMap))
-        },
-
-        //TODO : ne marche pas en orthogonal, seulement en hexagonal
-
-        setBetweenKasesCorner(element: React.JSX.Element, kaseMain: Kase2D, kases: Kase2D[]) {
-            const position = computePosition(kaseSize, [kaseMain, ...kases]);
-            contentMap.set(computeKey(position), element);
-            setContentMap(new Map(contentMap))
-        },
-        get(positionKey: string) {
-            return contentMap.get(positionKey);
-        }
-    }));
     return <>
 
         <primitive attach="background" object={backgroundTexture} />
