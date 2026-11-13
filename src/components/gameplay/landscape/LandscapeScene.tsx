@@ -1,8 +1,8 @@
-import {  Sky } from '@react-three/drei';
+
 import { CuboidCollider, Physics, RigidBody } from '@react-three/rapier';
 import { TableauToThreeContent } from './TableauToThreeContent.tsx';
-import React, { useRef } from 'react';
-import { Euler, Vector2, Vector3 } from 'three';
+
+import { Euler, Vector2, } from 'three';
 import { saveImage } from './service.ts';
 import { useThree } from '@react-three/fiber';
 import { type HexagonalTableau, Kase2D } from '@services/game/labyrinth/tableau.ts';
@@ -12,11 +12,10 @@ export function LandscapeScene(props: { tableau:HexagonalTableau<Kase2D>}) {
 
     const {gl, scene, camera} = useThree();
 
-    const contentRef = useRef<typeof TableauToThreeContent>(null);
     return <>
 
         <Physics>
-            <TableauToThreeContent ref={contentRef} mapToPlay={new MapToPlay(props.tableau, new Vector2(4,4), new Vector2(7,4),new Euler(), "geometric")}></TableauToThreeContent>
+            <TableauToThreeContent  mapToPlay={new MapToPlay(props.tableau, new Vector2(4,4), new Vector2(7,4),new Euler(), "geometric")}></TableauToThreeContent>
 
             <RigidBody type="fixed"
                        friction={0.5}

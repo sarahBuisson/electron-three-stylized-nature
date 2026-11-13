@@ -1,22 +1,116 @@
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import './InventoryList.css'
 import type { InventoryItem } from './inventory.model.ts'
+import { updateInventoryAnimationQueue } from './inventoryAnimationQueue'
 
 interface InventoryListProps {
   items: InventoryItem[]
   onCameraClick?: () => void
 }
 
+const motionQuery = '(prefers-reduced-motion: reduce)'
+
+function subscribeToMotionPreference(onChange: () => void) {
+  const preference = window.matchMedia(motionQuery)
+  preference.addEventListener('change', onChange)
+  return () => preference.removeEventListener('change', onChange)
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia(motionQuery).matches
+}
+
+function serverPrefersReducedMotion() {
+  return true
+}
+
+function InventoryImage({ item }: { item: InventoryItem }) {
+  const [failedUrl, setFailedUrl] = useState<string | null>(null)
+
+  return item.urlImage && item.urlImage !== failedUrl ? (
+    <img src={item.urlImage} alt={item.name} onError={() => setFailedUrl(item.urlImage ?? null)} />
+  ) : (
+    <span aria-label={item.name}>📦</span>
+  )
+}
+
 export function InventoryList({ items, onCameraClick }: InventoryListProps) {
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null)
+  const [queue, setQueue] = useState<string[]>([])
+  const reducedMotion = useSyncExternalStore(subscribeToMotionPreference, prefersReducedMotion, serverPrefersReducedMotion)
+  const previousIds = useRef(new Set(items.map((item) => item.id)))
+  const mediaElements = useRef(new Map<string, HTMLDivElement>())
+  const animationElement = useRef<HTMLDivElement>(null)
+  const activeId = queue[0]
+  const activeItem = items.find((item) => item.id === activeId)
+  const hasActiveItem = Boolean(activeItem)
+
+  useLayoutEffect(() => {
+    const previous = previousIds.current
+    previousIds.current = new Set(items.map((item) => item.id))
+    setQueue((current) => {
+      const next = updateInventoryAnimationQueue(previous, current, items, reducedMotion)
+      return next.length === current.length && next.every((id, index) => id === current[index]) ? current : next
+    })
+  }, [items, reducedMotion])
+
+  useLayoutEffect(() => {
+    if (!activeId || !hasActiveItem || reducedMotion) return
+
+    const overlay = animationElement.current
+    const target = mediaElements.current.get(activeId)
+    if (!overlay || !target) {
+      setQueue((current) => current.filter((id) => id !== activeId))
+      return
+    }
+
+    let frame = 0
+    let started: number | undefined
+    const duration = 1000
+    const hold = 0.3
+
+    const animate = (time: number) => {
+      started ??= time
+      const progress = Math.min((time - started) / duration, 1)
+      const travel = Math.max(0, (progress - hold) / (1 - hold))
+      const eased = 1 - (1 - travel) ** 3
+      const destination = target.getBoundingClientRect()
+      const width = window.innerWidth + (destination.width - window.innerWidth) * eased
+      const height = window.innerHeight + (destination.height - window.innerHeight) * eased
+      overlay.style.left = `${destination.left * eased}px`
+      overlay.style.top = `${destination.top * eased}px`
+      overlay.style.width = `${width}px`
+      overlay.style.height = `${height}px`
+      overlay.style.borderRadius = `${10 * eased}px`
+      overlay.style.fontSize = `${Math.min(window.innerWidth, window.innerHeight) * 0.3 * (1 - eased) + 16 * eased}px`
+
+      if (progress < 1 && target.isConnected) {
+        frame = window.requestAnimationFrame(animate)
+      } else {
+        setQueue((current) => current.filter((id) => id !== activeId))
+      }
+    }
+
+    const image = overlay.querySelector('img')
+    const start = () => { frame = window.requestAnimationFrame(animate) }
+    if (image && !image.complete) {
+      image.addEventListener('load', start, { once: true })
+      image.addEventListener('error', start, { once: true })
+    } else {
+      start()
+    }
+
+    return () => {
+      window.cancelAnimationFrame(frame)
+      image?.removeEventListener('load', start)
+      image?.removeEventListener('error', start)
+    }
+  }, [activeId, hasActiveItem, reducedMotion])
 
   const handleItemClick = (item: InventoryItem) => {
-
-
     if (item.id === 'camera' && onCameraClick) {
-      onCameraClick();
-
-    }else {
+      onCameraClick()
+    } else {
       setSelectedItem(item)
     }
   }
@@ -34,15 +128,18 @@ export function InventoryList({ items, onCameraClick }: InventoryListProps) {
             <button
               key={item.id}
               type="button"
-              className="inventory-item"
+              className={`inventory-item${queue.includes(item.id) ? ' inventory-item--pending' : ''}`}
+              disabled={queue.includes(item.id)}
               onClick={() => handleItemClick(item)}
             >
-              <div className="inventory-item__media">
-                {item.urlImage ? (
-                  <img src={item.urlImage} alt={item.name} />
-                ) : (
-                  <span>📦</span>
-                )}
+              <div
+                className="inventory-item__media"
+                ref={(element) => {
+                  if (element) mediaElements.current.set(item.id, element)
+                  else mediaElements.current.delete(item.id)
+                }}
+              >
+                <InventoryImage item={item} />
               </div>
 
               <div className="inventory-item__info">
@@ -54,6 +151,12 @@ export function InventoryList({ items, onCameraClick }: InventoryListProps) {
         </div>
       </div>
 
+      {activeItem && !reducedMotion ? (
+        <div className="inventory-add-animation" ref={animationElement} aria-hidden="true">
+          <InventoryImage key={activeItem.id} item={activeItem} />
+        </div>
+      ) : null}
+
       {selectedItem ? (
         <div className="inventory-modal-overlay" role="dialog" aria-modal="true" aria-label={selectedItem.name}>
           <div className="inventory-modal">
@@ -62,11 +165,7 @@ export function InventoryList({ items, onCameraClick }: InventoryListProps) {
             </button>
 
             <div className="inventory-modal__media">
-              {selectedItem.urlImage ? (
-                <img src={selectedItem.urlImage} alt={selectedItem.name} />
-              ) : (
-                <span className="inventory-modal__fallback">📦</span>
-              )}
+              <InventoryImage item={selectedItem} />
             </div>
 
             <div className="inventory-modal__message">

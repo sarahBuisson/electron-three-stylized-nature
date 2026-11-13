@@ -61,6 +61,37 @@
   object-fit: cover;
 }
 
+.inventory-item--pending {
+  cursor: default;
+}
+
+.inventory-item--pending .inventory-item__media > * {
+  visibility: hidden;
+}
+
+.inventory-add-animation {
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 190;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+  font-size: min(30vw, 30vh);
+}
+
+.inventory-add-animation img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.inventory-add-animation span {
+  font-size: inherit;
+}
+
 .inventory-item__info {
   display: flex;
   flex-direction: column;
@@ -125,7 +156,7 @@
   object-fit: cover;
 }
 
-.inventory-modal__fallback {
+.inventory-modal__media span {
   font-size: 4rem;
 }
 
