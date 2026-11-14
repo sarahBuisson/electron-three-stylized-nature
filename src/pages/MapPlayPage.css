@@ -6,6 +6,50 @@
   background: #000;
 }
 
+.camera-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 210;
+  background: white;
+  pointer-events: none;
+  animation: camera-flash 250ms ease-out forwards;
+}
+
+.win-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.win-popup {
+  padding: 2rem 3rem;
+  border-radius: 16px;
+  background: #1a1a1a;
+  color: white;
+  text-align: center;
+}
+
+.win-popup button {
+  padding: 0.75rem 1.25rem;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+@keyframes camera-flash {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .camera-flash {
+    display: none;
+  }
+}
+
 .map-play-overlay {
   position: absolute;
   inset: 0;

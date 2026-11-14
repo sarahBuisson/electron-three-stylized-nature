@@ -88,6 +88,19 @@
   object-fit: contain;
 }
 
+.inventory-add-animation img.inventory-photo {
+  width: auto;
+  height: auto;
+  max-width: var(--photo-size, 80%);
+  max-height: var(--photo-size, 80%);
+  border-width: var(--photo-border-width, 20px);
+}
+
+.inventory-photo {
+  box-sizing: border-box;
+  border: 5px solid white;
+}
+
 .inventory-add-animation span {
   font-size: inherit;
 }

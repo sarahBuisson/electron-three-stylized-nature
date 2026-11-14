@@ -28,7 +28,12 @@ function InventoryImage({ item }: { item: InventoryItem }) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null)
 
   return item.urlImage && item.urlImage !== failedUrl ? (
-    <img src={item.urlImage} alt={item.name} onError={() => setFailedUrl(item.urlImage ?? null)} />
+    <img
+      className={item.type === 'Photo' ? 'inventory-photo' : undefined}
+      src={item.urlImage}
+      alt={item.name}
+      onError={() => setFailedUrl(item.urlImage ?? null)}
+    />
   ) : (
     <span aria-label={item.name}>📦</span>
   )
@@ -66,13 +71,13 @@ export function InventoryList({ items, onCameraClick }: InventoryListProps) {
 
     let frame = 0
     let started: number | undefined
-    const duration = 1000
-    const hold = 0.3
+    const holdDuration = 5000
+    const travelDuration = 700
 
     const animate = (time: number) => {
       started ??= time
-      const progress = Math.min((time - started) / duration, 1)
-      const travel = Math.max(0, (progress - hold) / (1 - hold))
+      const elapsed = time - started
+      const travel = Math.min(Math.max(0, (elapsed - holdDuration) / travelDuration), 1)
       const eased = 1 - (1 - travel) ** 3
       const destination = target.getBoundingClientRect()
       const width = window.innerWidth + (destination.width - window.innerWidth) * eased
@@ -83,8 +88,10 @@ export function InventoryList({ items, onCameraClick }: InventoryListProps) {
       overlay.style.height = `${height}px`
       overlay.style.borderRadius = `${10 * eased}px`
       overlay.style.fontSize = `${Math.min(window.innerWidth, window.innerHeight) * 0.3 * (1 - eased) + 16 * eased}px`
+      overlay.style.setProperty('--photo-size', `${80 + 20 * eased}%`)
+      overlay.style.setProperty('--photo-border-width', `${20 - 15 * eased}px`)
 
-      if (progress < 1 && target.isConnected) {
+      if (travel < 1 && target.isConnected) {
         frame = window.requestAnimationFrame(animate)
       } else {
         setQueue((current) => current.filter((id) => id !== activeId))

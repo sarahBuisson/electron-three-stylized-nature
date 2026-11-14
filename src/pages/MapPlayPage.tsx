@@ -9,8 +9,10 @@ import type { KaseLandscape } from '@components/gameplay/landscape/service.ts';
 import { loadMapForPlay, MapToPlay } from '@utils/mapPlayStorage';
 import { TableauToThreeContent } from '@components/gameplay/landscape/TableauToThreeContent.tsx';
 import { computeAveragePositionHexa } from '@components/gameplay/landscape/hexPosition.ts';
-import { findCentralSpawn } from '@components/gameplay/landscape/playerSpawn.ts';
-import { FPSPlayer } from '@components/gameplay/controller/FPSPlayer';
+import { findCentralSpawn, findRandomSpawn, randomSpawnDirection } from '@components/gameplay/landscape/playerSpawn.ts';
+import { type SolutionPose } from '@components/gameplay/landscape/solutionMatch.ts';
+import { SolutionWatcher } from '@components/gameplay/landscape/SolutionWatcher.tsx';
+import { FPSPlayer, type FPSPlayerHandle } from '@components/gameplay/controller/FPSPlayer';
 import { KEYBIND_PRESETS, type KeybindPresetType } from '@config/keybindPresets.ts';
 import { GroundPlane } from '@components/gameplay/oldGameplay/GroundPlane.tsx';
 import { InventoryList } from '@components/gameplay/inventory/InventoryList';
@@ -64,6 +66,9 @@ export function MapPlayPage() {
         : !spawn ? 'The map needs at least one tile without a tree or mountain to start playing.' : null;
     const [solutionUrl] = useState<string | null>('./inventory/camera.png');
     const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(() => readInventory('./inventory/camera.png'));
+    const [flashId, setFlashId] = useState(0);
+    const [solution, setSolution] = useState<SolutionPose | null>(null);
+    const [won, setWon] = useState(false);
     const playerPosition = useMemo(() => {
         if (!spawn) return null;
         const position = computeAveragePositionHexa(1, [spawn]);
@@ -72,6 +77,7 @@ export function MapPlayPage() {
     }, [spawn]);
     const cameraSolution = useRef<PerspectiveCameraType | null>(null);
     const captureViewRef = useRef<(() => Promise<string>) | null>(null);
+    const playerRef = useRef<FPSPlayerHandle>(null);
     const keybinds = KEYBIND_PRESETS.WASD;
     const [keybindPreset, setKeybindPreset] = useState<KeybindPresetType>('WASD')
     const registerCaptureView = useCallback((capture: () => Promise<string>) => {
@@ -95,15 +101,39 @@ export function MapPlayPage() {
         }
     }, [initialMap, navigate]);
 
-    const initGame = async () => {
-    await handleCameraClick();
+    function computeRandomFreePosition() {
+        if (!tableau) throw new Error('Cannot initialize the game without a map.');
+        const randomSpawn = findRandomSpawn(tableau);
+        if (!randomSpawn) throw new Error('Cannot place the player: no suitable tile is available.');
+        if (!playerRef.current) throw new Error('Cannot place the player before it is ready.');
+        const position = computeAveragePositionHexa(1, [randomSpawn]);
+        position.y = 2;
+        return position;
     }
 
+    const initGame = async () => {
+        setSolution(null);
+        setWon(false);
+        const positionSolution = computeRandomFreePosition();
+        const directionSolution = randomSpawnDirection();
+        playerRef.current?.moveTo(positionSolution, directionSolution);
+
+        await handleCameraClick();
+        const position = computeRandomFreePosition();
+        playerRef.current?.moveTo(position, randomSpawnDirection());
+        setSolution({ position: positionSolution, yaw: directionSolution });
+    }
+
+    const handleWin = useCallback(() => {
+        if (document.pointerLockElement) document.exitPointerLock();
+        setWon(true);
+    }, []);
 
     const handleCameraClick = async () => {
-        const photoUrl = captureViewRef.current
+         const photoUrl = captureViewRef.current
             ? await captureViewRef.current().catch(() => solutionUrl ?? '/inventory/camera.png')
             : (solutionUrl ?? '/inventory/camera.png');
+        setFlashId((id) => id + 1);
 
         setInventoryItems((previousItems) => {
             const nextItems = [...previousItems];
@@ -176,9 +206,16 @@ export function MapPlayPage() {
                         />
                         <hemisphereLight args={['#87CEEB', '#6B8E23', 0.5]} />
                         <GroundPlane position={[0, 0, 0]} size={tableau.sizeX * 4} />
-                        <FPSPlayer position={playerPosition} />
+                        <FPSPlayer ref={playerRef} position={playerPosition} />
+                        {solution && (
+                            <mesh position={[solution.position.x, 0.15, solution.position.z]}>
+                                <boxGeometry args={[0.3, 0.3, 0.3]} />
+                                <meshStandardMaterial color="#ff69b4" />
+                            </mesh>
+                        )}
+                        {solution && !won && <SolutionWatcher solution={solution} onWin={handleWin} />}
 
-                        <TableauToThreeContent mapToPlay={gameMap} callback={handleCameraClick}/>
+                        <TableauToThreeContent mapToPlay={gameMap} callback={initGame}/>
 
                         <fog attach="fog" args={['#87CEEB', 10, 100]} />
                     </Physics>
@@ -197,6 +234,15 @@ export function MapPlayPage() {
 
             {solutionUrl ? <img src={solutionUrl} alt="Solution" className="solution-image" /> : null}
             <InventoryList items={inventoryItems} onCameraClick={handleCameraClick} />
+            {flashId > 0 && <div key={flashId} className="camera-flash" aria-hidden="true" />}
+            {won && (
+                <div className="win-overlay" role="dialog" aria-modal="true" aria-labelledby="win-title">
+                    <div className="win-popup">
+                        <h1 id="win-title">Win!</h1>
+                        <button type="button" autoFocus onClick={() => navigate('/map-editor')}>Return to Editor</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

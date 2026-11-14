@@ -1,7 +1,7 @@
 import { PointerLockControls, useKeyboardControls } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
-import { CapsuleCollider, RapierRigidBody, RigidBody, useRapier, } from "@react-three/rapier";
-import React, { useEffect, useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import { CapsuleCollider, RigidBody, useRapier, type RapierRigidBody } from "@react-three/rapier";
+import React, { useEffect, useImperativeHandle, useRef } from "react";
 import * as RAIPER from "@dimforge/rapier3d-compat";
 import * as THREE from "three";
 import { Euler, PointLightHelper, Vector3 } from "three";
@@ -10,7 +10,11 @@ import type { PointerLockControlsProps } from '@react-three/drei/core/PointerLoc
 const SPEED = 3;
 const direction = new THREE.Vector3(0, 0, 0);
 
-export const FPSPlayer = (props: { position?: Vector3, rotation?: Euler })=>
+export type FPSPlayerHandle = {
+    moveTo: (position: Vector3, yaw?: number) => void;
+};
+
+export const FPSPlayer = ({ ref, ...props }: { position?: Vector3, rotation?: Euler, ref?: React.Ref<FPSPlayerHandle> })=>
 {
     const position = props.position || new Vector3(0, 15, 0);
     const rotation = props.rotation || new Euler(0, 0, 0);
@@ -19,6 +23,19 @@ export const FPSPlayer = (props: { position?: Vector3, rotation?: Euler })=>
     const playerCapsuleColliderRef = useRef<RAIPER.Collider>(null);
     const [, get] = useKeyboardControls();
     const rapier = useRapier();
+    const camera = useThree((state) => state.camera);
+    useImperativeHandle(ref, () => ({
+        moveTo(position, yaw) {
+            const body = bodyRef.current;
+            if (!body) {
+                throw new Error("Cannot move the player before its physics body is ready.");
+            }
+            body.setTranslation(position, true);
+            body.setLinvel({ x: 0, y: 0, z: 0 }, true);
+            camera.position.copy(position);
+            if (yaw !== undefined) camera.rotation.set(0, yaw, 0, 'YXZ');
+        }
+    }), [camera]);
     useEffect(() => {
         if(controlRef.current?.camera)
         controlRef.current.camera.rotation.set(props.rotation?.x || 0, props.rotation?.y || 0, props.rotation?.z || 0);
